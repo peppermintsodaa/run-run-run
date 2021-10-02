@@ -143,7 +143,6 @@ public class Project2 extends ApplicationAdapter {
 
 	public class TitleScreen implements ScreenMode {
         boolean isAtTitleScreen = true;
-		boolean booAppear = false;
         
 		@Override
         public void draw () {
@@ -172,18 +171,46 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
-	public class Ball {
+	class Ball extends Effect {
 		Coord pos = new Coord((int)(Math.random()*(screen_size.x+1)),screen_size.y+30);
     	Coord vel = new Coord(0,(int)(Math.random()*(2+1)));
     	Coord accel = new Coord(0, -0.1f);
+
+		ArrayList<Sprite> splash_frames = createBallEffect();
 
 		boolean tick () {
 			pos = pos.plus(vel);
 			vel = vel.plus(accel);
 
 			if (pos.y < 0) {
+				for (Sprite s: splash_frames) {
+					s.setPosition(pos.x,-25);
+					s.draw(batch);
+				}
 				return false;
 			}
+			return true;
+		}
+	}
+
+	class Effect {
+		Sprite img;
+		Coord pos;
+		int duration;
+		int ticks;
+
+		float p () {
+			return ticks/(float)duration;
+		}
+
+		boolean draw () {
+			ticks++;
+			if (p() > 1) {
+				return false;
+			}
+
+			pos.position(img);
+			img.draw(batch);
 			return true;
 		}
 	}
@@ -193,6 +220,23 @@ public class Project2 extends ApplicationAdapter {
 			Ball b = new Ball();
 			balls.add(b);
 		}
+	}
+
+	ArrayList<Sprite> ball_splash_frames;
+
+	ArrayList<Sprite> createBallEffect() {
+		if (ball_splash_frames != null) {
+			return ball_splash_frames;
+		}
+		ball_splash_frames = new ArrayList<Sprite>();
+
+		for (int i = 1; i <= 8; ++i) {
+			String name = "ball_splash/" + i + ".png";
+
+			Sprite s = new Sprite(new Texture(Gdx.files.internal(name)));
+			ball_splash_frames.add(s);
+		}
+		return ball_splash_frames;
 	}
 
 	//-------------------- V A R I A B L E S --------------------//
@@ -286,7 +330,7 @@ public class Project2 extends ApplicationAdapter {
 
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
-		createBall();	// creates array of ball
+		createBall();	// creates array of balls
 		// TITLE SCREEN
 		for (Ball ball: balls) {
 			ball.pos.position(ball_img);
@@ -311,6 +355,7 @@ public class Project2 extends ApplicationAdapter {
 		titleSheet.dispose();
 		boo_img.getTexture().dispose();
 		ball_img.getTexture().dispose();
+		for (Sprite s: ball_splash_frames) s.getTexture().dispose();
 
 		boo.dispose();
 	}
