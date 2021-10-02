@@ -187,13 +187,10 @@ public class Project2 extends ApplicationAdapter {
 	}
 
 	void createBall() {
-		Timer.schedule(new Timer.Task() {
-			@Override
-			public void run() {
-				Ball b = new Ball();
-				balls.add(b);
-			}
-		}, 0, 0.5f);
+		if ((counter % 30) == 0) {
+			Ball b = new Ball();
+			balls.add(b);
+		}
 	}
 
 	//-------------------- V A R I A B L E S --------------------//
@@ -220,7 +217,7 @@ public class Project2 extends ApplicationAdapter {
 	ArrayList<Ball> balls = new ArrayList<Ball>();
 
 	float currTime;
-	int currTimeInt;
+	int counter = 0;
 	int again = 1;
 
 	//-----------------------------------------------------------//
@@ -251,7 +248,6 @@ public class Project2 extends ApplicationAdapter {
 
 		ball_img = new Sprite(new Texture(Gdx.files.internal("ball2.png")));
 		ball_img.setScale(0.5f);
-		createBall();	// creates array of balls
 
 		// AUDIO
 		boo = Gdx.audio.newSound(Gdx.files.internal("boo.wav"));
@@ -280,6 +276,7 @@ public class Project2 extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
 		currTime += Gdx.graphics.getDeltaTime();
+		counter += 1;
 
 		currFrameTitle = textStyles.getKeyFrame(currTime, true);
 		
@@ -287,6 +284,7 @@ public class Project2 extends ApplicationAdapter {
 
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
+		createBall();	// creates array of balls
 		// TITLE SCREEN
 		for (Ball ball: balls) {
 			ball.pos.position(ball_img);
