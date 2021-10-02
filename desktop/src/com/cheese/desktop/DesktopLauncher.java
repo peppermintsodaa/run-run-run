@@ -2,7 +2,6 @@ package com.cheese.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.cheese.Project2;
 
 public class DesktopLauncher {
