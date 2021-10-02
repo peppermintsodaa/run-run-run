@@ -1,2 +1,0 @@
-com/cheese/desktop/DesktopLauncher.java
- com.cheese.desktop.DesktopLauncher
