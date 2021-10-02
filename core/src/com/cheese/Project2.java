@@ -147,7 +147,7 @@ public class Project2 extends ApplicationAdapter {
 		@Override
         public void draw () {
             if (isAtTitleScreen) {
-                batch.draw(currFrameTitle, 240, 500);
+                titleText.tick();
                 menuFont.draw(batch, "NEW GAME", 570, 250);
 				menuFont.draw(batch, "EXIT", 620, 200);
             }
@@ -164,6 +164,23 @@ public class Project2 extends ApplicationAdapter {
         }
     }
 
+	class TitleText {
+		Coord pos = new Coord(640, 500);
+		Sprite curFrame;
+		final int DELAY = 8; 	// plays every 2/15th second
+
+		void tick() {
+			int which = (int)((counter/DELAY) % textFrames.size());
+			if (which >= textFrames.size()) {
+				which = textFrames.size() - 1;
+			}
+			curFrame = textFrames.get(which);
+			
+			pos.position(curFrame);
+			curFrame.draw(batch);
+		}
+	}
+
 	class Boo {
 		Boo (int x, int y) {
 			Coord pos = new Coord(x, y);
@@ -171,7 +188,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
-	class Ball extends Effect {
+	class Ball {
 		Coord pos = new Coord((int)(Math.random()*(screen_size.x+1)),screen_size.y+30);
     	Coord vel = new Coord(0,(int)(Math.random()*(2+1)));
     	Coord accel = new Coord(0, -0.1f);
@@ -184,7 +201,7 @@ public class Project2 extends ApplicationAdapter {
 
 			if (pos.y < 0) {
 				for (Sprite s: splash_frames) {
-					s.setPosition(pos.x,-25);
+					s.setPosition(pos.x-75,-25);
 					s.draw(batch);
 				}
 				return false;
@@ -242,11 +259,12 @@ public class Project2 extends ApplicationAdapter {
 	//-------------------- V A R I A B L E S --------------------//
 
 	Animation<TextureRegion> textStyles;
-	TextureRegion[] textFrames;
-	TextureRegion currFrameTitle;
+	ArrayList<Sprite> textFrames;
+	Sprite currFrameTitle;
 	Texture titleSheet;
 
 	TitleScreen title = new TitleScreen();
+	TitleText titleText;
 
 	BitmapFont menuFont;
 
@@ -268,8 +286,23 @@ public class Project2 extends ApplicationAdapter {
 
 	//-----------------------------------------------------------//
 
+	ArrayList<Sprite> split(Texture img, ArrayList<Sprite> regionArray, int rows, int columns) {
+		TextureRegion[][] tmp = TextureRegion.split(img,
+			img.getWidth() / columns,
+			img.getHeight() / rows);
+
+		regionArray = new ArrayList<Sprite>(columns * rows);
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				Sprite s = new Sprite(tmp[i][j]);
+				regionArray.add(s);
+			}
+		}
+	return regionArray;
+	}
+
 	// split texture sheets for use in animation
-	TextureRegion[] split(Texture img, TextureRegion[] regionArray, int rows, int columns) {
+	/* TextureRegion[] split(Texture img, TextureRegion[] regionArray, int rows, int columns) {
 		TextureRegion[][] tmp = TextureRegion.split(img,
 			img.getWidth() / columns,
 			img.getHeight() / rows);
@@ -282,7 +315,7 @@ public class Project2 extends ApplicationAdapter {
 			}
 		}
 	return regionArray;
-	}
+	} */
 	
 	@Override
 	public void create () {
@@ -301,7 +334,9 @@ public class Project2 extends ApplicationAdapter {
 		// TITLE SCREEN
 		titleSheet = new Texture("titleText/run_run.png");
 		textFrames = split(titleSheet, textFrames, 5, 1);
-		textStyles = new Animation<TextureRegion>(0.15f, textFrames);
+		titleText = new TitleText();
+
+		// textStyles = new Animation<TextureRegion>(0.15f, textFrames);
 
 		// current elapsed time
 		currTime = 0f;
@@ -322,9 +357,9 @@ public class Project2 extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
 		currTime += Gdx.graphics.getDeltaTime();
-		counter += 1;
+		counter++;
 
-		currFrameTitle = textStyles.getKeyFrame(currTime, true);
+		// currFrameTitle = textStyles.getKeyFrame(currTime, true);
 		
 		batch.begin();
 

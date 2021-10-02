@@ -8,3 +8,4 @@ com/cheese/Project2.java
  com.cheese.Project2$Effect
  com.cheese.Project2$InputProcessor
  com.cheese.Project2$TitleScreen
+ com.cheese.Project2$TitleText
