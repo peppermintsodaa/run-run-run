@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator; // custom f
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.InputAdapter;
@@ -142,11 +141,12 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
-	public class TitleScreen {
+	public class TitleScreen implements ScreenMode {
         boolean isAtTitleScreen = true;
 		boolean booAppear = false;
         
-        void draw () {
+		@Override
+        public void draw () {
             if (isAtTitleScreen) {
                 batch.draw(currFrameTitle, 240, 500);
                 menuFont.draw(batch, "NEW GAME", 570, 250);
@@ -154,11 +154,13 @@ public class Project2 extends ApplicationAdapter {
             }
         }
 
-        void close () {
+		@Override
+        public void close () {
             isAtTitleScreen = false;
         }
 
-        void open () {
+		@Override
+        public void open () {
             isAtTitleScreen = true;
         }
     }

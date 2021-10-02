@@ -1,8 +1,8 @@
 
 package com.cheese;
 
-public class ScreenMode extends Project2 {
-    ScreenMode() {};
-
-    
+public interface ScreenMode {
+    public void draw ();
+    public void close ();
+    public void open ();    
 }
