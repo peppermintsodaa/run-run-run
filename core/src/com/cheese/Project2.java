@@ -3,7 +3,6 @@ package com.cheese;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -193,17 +192,18 @@ public class Project2 extends ApplicationAdapter {
     	Coord vel = new Coord(0,(int)(Math.random()*(2+1)));
     	Coord accel = new Coord(0, -0.1f);
 
-		ArrayList<Sprite> splash_frames = createBallEffect();
-
 		boolean tick () {
 			pos = pos.plus(vel);
 			vel = vel.plus(accel);
 
 			if (pos.y < 0) {
-				for (Sprite s: splash_frames) {
-					s.setPosition(pos.x-75,-25);
-					s.draw(batch);
-				}
+				pos.y = 25;
+
+				BallSplash splash = new BallSplash();
+				splash.duration = 9;
+				splash.pos = new Coord(pos.x, pos.y);
+				effects.add(splash);
+
 				return false;
 			}
 			return true;
@@ -211,8 +211,12 @@ public class Project2 extends ApplicationAdapter {
 	}
 
 	class Effect {
-		Sprite img;
+		Sprite curFrame;
 		Coord pos;
+		Coord vel = new Coord(0,0);
+		float scale_min = 1;
+    	float scale_max = 1;
+
 		int duration;
 		int ticks;
 
@@ -226,8 +230,10 @@ public class Project2 extends ApplicationAdapter {
 				return false;
 			}
 
-			pos.position(img);
-			img.draw(batch);
+			pos.position(curFrame);
+			curFrame.setScale(scale_min*(1-p()) + scale_max*p() );
+			curFrame.draw(batch);
+
 			return true;
 		}
 	}
@@ -256,17 +262,20 @@ public class Project2 extends ApplicationAdapter {
 		return ball_splash_frames;
 	}
 
+	class BallSplash extends Effect {
+		ArrayList<Sprite> splash_frames = createBallEffect();
+
+		boolean draw() {
+			int which = (int)(p() * splash_frames.size());
+			if (which >= splash_frames.size()) {
+				which = splash_frames.size() - 1;
+			}
+			curFrame = splash_frames.get(which);
+			return super.draw();
+		}
+	}
+
 	//-------------------- V A R I A B L E S --------------------//
-
-	Animation<TextureRegion> textStyles;
-	ArrayList<Sprite> textFrames;
-	Sprite currFrameTitle;
-	Texture titleSheet;
-
-	TitleScreen title = new TitleScreen();
-	TitleText titleText;
-
-	BitmapFont menuFont;
 
 	Coord screen_size;
 	Coord mouse_pos = new Coord(0,0);
@@ -280,12 +289,24 @@ public class Project2 extends ApplicationAdapter {
 	ArrayList<Boo> boos = new ArrayList<Boo>();
 	ArrayList<Ball> balls = new ArrayList<Ball>();
 
+	ArrayList<Effect> effects = new ArrayList<Effect>();
+
+	ArrayList<Sprite> textFrames;
+	Sprite currFrameTitle;
+	Texture titleSheet;
+
+	TitleScreen title = new TitleScreen();
+	TitleText titleText;
+
+	BitmapFont menuFont;
+
 	float currTime;
 	int counter = 0;
 	int again = 1;
 
 	//-----------------------------------------------------------//
 
+	// split texture sheets to use when animating sprite
 	ArrayList<Sprite> split(Texture img, ArrayList<Sprite> regionArray, int rows, int columns) {
 		TextureRegion[][] tmp = TextureRegion.split(img,
 			img.getWidth() / columns,
@@ -300,22 +321,6 @@ public class Project2 extends ApplicationAdapter {
 		}
 	return regionArray;
 	}
-
-	// split texture sheets for use in animation
-	/* TextureRegion[] split(Texture img, TextureRegion[] regionArray, int rows, int columns) {
-		TextureRegion[][] tmp = TextureRegion.split(img,
-			img.getWidth() / columns,
-			img.getHeight() / rows);
-
-		regionArray = new TextureRegion[columns * rows];
-		int index = 0;
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
-				regionArray[index++] = tmp[i][j]; 
-			}
-		}
-	return regionArray;
-	} */
 	
 	@Override
 	public void create () {
@@ -336,11 +341,6 @@ public class Project2 extends ApplicationAdapter {
 		textFrames = split(titleSheet, textFrames, 5, 1);
 		titleText = new TitleText();
 
-		// textStyles = new Animation<TextureRegion>(0.15f, textFrames);
-
-		// current elapsed time
-		currTime = 0f;
-
 		// custom text generator
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("couture-bld.otf"));
 
@@ -356,10 +356,7 @@ public class Project2 extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
-		currTime += Gdx.graphics.getDeltaTime();
 		counter++;
-
-		// currFrameTitle = textStyles.getKeyFrame(currTime, true);
 		
 		batch.begin();
 
@@ -375,6 +372,14 @@ public class Project2 extends ApplicationAdapter {
 				trash_bin.add(ball);
 			}
 		}
+
+		for (Effect e : effects) {
+			if (e.draw() == false) trash_bin.add(e);
+		}
+
+		balls.removeAll(trash_bin);
+		effects.removeAll(trash_bin);
+		trash_bin.clear();
 
 		title.draw();
 		for (Boo boo: boos) {
