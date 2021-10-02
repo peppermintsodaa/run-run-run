@@ -286,7 +286,7 @@ public class Project2 extends ApplicationAdapter {
 
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
-		createBall();	// creates array of balls
+		createBall();	// creates array of ball
 		// TITLE SCREEN
 		for (Ball ball: balls) {
 			ball.pos.position(ball_img);
