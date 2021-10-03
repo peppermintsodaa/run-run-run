@@ -17,6 +17,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Sound;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Project2 extends ApplicationAdapter {
 	public class InputProcessor extends InputAdapter
@@ -66,6 +67,7 @@ public class Project2 extends ApplicationAdapter {
 				// clicking on GO BACK
 				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 660)  {
 					playSound(click);
+					char_select.close();
 					title.open();
 					return false;
 				}
@@ -81,10 +83,20 @@ public class Project2 extends ApplicationAdapter {
 					balls.removeAll(balls);
 					playSound(click);
 					title.close();
+					char_select.open();
 					return false;
 				}
 			}
 			return false;
+		}
+
+		public boolean mouseMoved (int screenX, int screenY) {
+			mouse_pos = new Coord(screenX, screen_size.y - screenY);
+
+			if (char_select.isAtCharScreen) {
+				
+			}
+			return true;
 		}
 	}
 
@@ -242,8 +254,12 @@ public class Project2 extends ApplicationAdapter {
 		@Override
         public void draw () {
             if (isAtCharScreen) {
-                titleFont.draw(batch, "SELECT CHARACTER", 300, 600);
+                titleFont.draw(batch, "SELECT CHARACTER", 250, 600);
 				menuFont.draw(batch, "GO BACK", 570, 100);
+
+				stickman = new Character(640, 320);
+				stickman.scale = 0.9f;
+				stickman.setState(states.get("stand/looking front"));
         	}
 		}
 
@@ -258,17 +274,61 @@ public class Project2 extends ApplicationAdapter {
         }
     }
 
+	HashMap<String, Integer> states = new HashMap<>();
+
+	void createCharStates() {
+		states.put("stand/looking front", 0);
+		states.put("stand/looking left", 1);
+		states.put("stand/looking right", 2);
+	}
+
+	public class Character {
+		Coord pos;
+		float scale = 1;
+
+		Sprite curFrame;
+		int duration;
+		int ticks;
+
+		Character(float x, float y) {
+			pos = new Coord(x,y);
+		}
+
+		float p () {
+			return ticks/(float)duration;
+		}
+
+		boolean draw(ArrayList<Sprite> sprite_list, int state) {
+			curFrame = sprite_list.get(state);
+			curFrame.setScale(scale);
+			pos.position(curFrame);
+			curFrame.draw(batch);
+			return true;
+		}
+
+		void setState(int state) {
+			switch (state) {
+				case 1: draw(stickman_sprites, 1);
+						break;
+				case 2: draw(stickman_sprites, 2);
+						break;
+				default:draw(stickman_sprites, 0);
+						break;
+        	}
+		}		
+	}
+
 	class TitleText {
 		Coord pos = new Coord(640, 500);
 		Sprite curFrame;
 		final int DELAY = 8; 	// plays every 2/15th second
 
 		void tick() {
-			int which = (int)((counter/DELAY) % textFrames.size());
-			if (which >= textFrames.size()) {
-				which = textFrames.size() - 1;
+			int which = (int)((counter/DELAY) % titleFrames.size());
+			if (which >= titleFrames.size()) {
+				which = titleFrames.size() - 1;
 			}
-			curFrame = textFrames.get(which);
+			curFrame = titleFrames.get(which);
 			
 			pos.position(curFrame);
 			curFrame.draw(batch);
@@ -386,6 +446,9 @@ public class Project2 extends ApplicationAdapter {
 	Sprite ball_img;
 	Sprite boo_img;
 
+	ArrayList<Sprite> stickman_sprites;
+	Character stickman;
+
 	Sound boo;
 	Sound click;
 
@@ -394,9 +457,8 @@ public class Project2 extends ApplicationAdapter {
 
 	ArrayList<Effect> effects = new ArrayList<Effect>();
 
-	ArrayList<Sprite> textFrames;
+	ArrayList<Sprite> titleFrames;
 	Sprite currFrameTitle;
-	Texture titleSheet;
 
 	TitleScreen title = new TitleScreen();
 	TitleText titleText;
@@ -452,13 +514,17 @@ public class Project2 extends ApplicationAdapter {
 		ball_img = new Sprite(new Texture(Gdx.files.internal("ball2.png")));
 		ball_img.setScale(0.5f);
 
+		createCharStates();
+
+		// ANIMATED SPRITES
+		stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);
+
 		// AUDIO
 		boo = Gdx.audio.newSound(Gdx.files.internal("boo.wav"));
 		click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
 
 		// TITLE SCREEN
-		titleSheet = new Texture("titleText/run_run.png");
-		textFrames = split(titleSheet, textFrames, 5, 1);
+		titleFrames = split(new Texture("titleText/run_run.png"), titleFrames, 5, 1);
 		titleText = new TitleText();
 
 		// custom text generator
@@ -497,9 +563,10 @@ public class Project2 extends ApplicationAdapter {
 
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
-		createBall();	// creates array of balls
-		// TITLE SCREEN
+		// TITLE SCREEN / OPTIONS SCREEN
 		if (title.isAtTitleScreen || options.isAtOptionsScreen) {
+			createBall();	// creates array of balls
+
 			for (Ball ball: balls) {
 				ball.pos.position(ball_img);
 				ball_img.draw(batch);
@@ -512,8 +579,9 @@ public class Project2 extends ApplicationAdapter {
 
 		title.draw();
 		options.draw();
+		char_select.draw();
 
-		for (Boo boo: boos) {
+		for (Boo b: boos) {
 			boo_img.draw(batch);
 		}
 
@@ -531,12 +599,17 @@ public class Project2 extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		titleSheet.dispose();
 		boo_img.getTexture().dispose();
 		ball_img.getTexture().dispose();
 		for (Sprite s: ball_splash_frames) s.getTexture().dispose();
+		for (Sprite f: titleFrames) f.getTexture().dispose();
 
 		boo.dispose();
 		click.dispose();
+		
+		menuFont.dispose();
+		titleFont.dispose();
+		offOption.dispose();
+		onOption.dispose();
 	}
 }
