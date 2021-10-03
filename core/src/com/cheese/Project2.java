@@ -1,6 +1,7 @@
 package com.cheese;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -25,18 +26,51 @@ public class Project2 extends ApplicationAdapter {
 			mouse_pos = new Coord(screenX, screen_size.y - screenY);
 
 			if (title.isAtTitleScreen) {
+				// clicking on NEW GAME
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
 					Boo b = new Boo(530, 237);
 					boos.add(b);
-					boo.play();
+					playSound(boo);
 					return false;
 				}
-				if (screenX >= 620 && screenX <= 690 && screenY >= 510 && screenY <= 550)  {
+				// clicking on OPTIONS
+				if (screenX >= 590 && screenX <= 720 && screenY >= 500 && screenY <= 550)  {
+					playSound(click);
+					title.close();
+					options.open();
+					return false;
+				}
+				// clicking on EXIT
+				if (screenX >= 620 && screenX <= 690 && screenY >= 560 && screenY <= 595)  {
+					playSound(click);
 					Gdx.app.exit();
 					return false;
-				}	
+				}
 			}
-			return false;
+			if (options.isAtOptionsScreen) {
+				// configuring sound
+				if (screenX >= 795 && screenX <= 840 && screenY >= 320 && screenY <= 355)  {
+					options.soundSwitch();
+					playSound(click);
+					return false;
+				}
+				// clicking on GO BACK
+				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 660)  {
+					playSound(click);
+					options.close();
+					title.open();
+					return false;
+				}
+			}
+			if (char_select.isAtCharScreen) {
+				// clicking on GO BACK
+				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 660)  {
+					playSound(click);
+					title.open();
+					return false;
+				}
+			}
+			return true;
 		}
 
 		public boolean touchUp (int screenX, int screenY, int pointer, int button)
@@ -44,6 +78,9 @@ public class Project2 extends ApplicationAdapter {
 			if (title.isAtTitleScreen) {
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
 					boos.removeAll(boos);
+					balls.removeAll(balls);
+					playSound(click);
+					title.close();
 					return false;
 				}
 			}
@@ -148,7 +185,8 @@ public class Project2 extends ApplicationAdapter {
             if (isAtTitleScreen) {
                 titleText.tick();
                 menuFont.draw(batch, "NEW GAME", 570, 250);
-				menuFont.draw(batch, "EXIT", 620, 200);
+				menuFont.draw(batch, "OPTIONS", 585, 200);
+				menuFont.draw(batch, "EXIT", 620, 150);
             }
         }
 
@@ -160,6 +198,63 @@ public class Project2 extends ApplicationAdapter {
 		@Override
         public void open () {
             isAtTitleScreen = true;
+        }
+    }
+
+	public class OptionsScreen implements ScreenMode {
+        boolean isAtOptionsScreen = false;
+		boolean soundOff = false;
+        
+		@Override
+        public void draw () {
+            if (isAtOptionsScreen) {
+                titleFont.draw(batch, "OPTIONS", 475, 600);
+                menuFont.draw(batch, "SOUND", 400, 400);
+				menuFont.draw(batch, "GO BACK", 570, 100);
+				if (soundOff) {
+					offOption.draw(batch, "OFF", 800, 390);
+				}
+				else onOption.draw(batch, "ON", 800, 390);
+            }
+        }
+
+		public void soundSwitch() {
+			if (!soundOff) {
+				soundOff = true;
+			}
+			else soundOff = false;
+		}
+
+		@Override
+        public void close () {
+            isAtOptionsScreen = false;
+        }
+
+		@Override
+        public void open () {
+            isAtOptionsScreen = true;
+        }
+    }
+
+	public class CharSelectScreen implements ScreenMode {
+        boolean isAtCharScreen = false;
+        
+		@Override
+        public void draw () {
+            if (isAtCharScreen) {
+                titleFont.draw(batch, "SELECT CHARACTER", 300, 600);
+				menuFont.draw(batch, "GO BACK", 570, 100);
+        	}
+		}
+
+		@Override
+        public void close () {
+            isAtCharScreen = false;
+        }
+
+		@Override
+        public void open () {
+            isAtCharScreen = true;
         }
     }
 
@@ -189,24 +284,31 @@ public class Project2 extends ApplicationAdapter {
 
 	class Ball {
 		Coord pos = new Coord((int)(Math.random()*(screen_size.x+1)),screen_size.y+30);
-    	Coord vel = new Coord(0,(int)(Math.random()*(2+1)));
-    	Coord accel = new Coord(0, -0.1f);
+    	Coord vel = new Coord(0,(int)(Math.random()*(5-2+1)+2));
+    	Coord accel = new Coord(0, -0.5f);
 
 		boolean tick () {
 			pos = pos.plus(vel);
 			vel = vel.plus(accel);
 
+			if (title.isAtTitleScreen && pos.x > 560 && pos.x < 750 && pos.y < 267) {
+				playSplash(pos.x, 267);
+				return false;
+			}
+
 			if (pos.y < 0) {
-				pos.y = 25;
-
-				BallSplash splash = new BallSplash();
-				splash.duration = 9;
-				splash.pos = new Coord(pos.x, pos.y);
-				effects.add(splash);
-
+				playSplash(pos.x, 12.5f);
 				return false;
 			}
 			return true;
+		}
+
+		void playSplash(float x, float y) {
+			BallSplash splash = new BallSplash();
+				splash.duration = 9;
+				splash.scale_min = splash.scale_max = .5f;
+				splash.pos = new Coord(x, y);
+				effects.add(splash);
 		}
 	}
 
@@ -239,7 +341,7 @@ public class Project2 extends ApplicationAdapter {
 	}
 
 	void createBall() {
-		if ((counter % 30) == 0) {
+		if ((counter % 20) == 0) {
 			Ball b = new Ball();
 			balls.add(b);
 		}
@@ -285,6 +387,7 @@ public class Project2 extends ApplicationAdapter {
 	Sprite boo_img;
 
 	Sound boo;
+	Sound click;
 
 	ArrayList<Boo> boos = new ArrayList<Boo>();
 	ArrayList<Ball> balls = new ArrayList<Ball>();
@@ -297,8 +400,18 @@ public class Project2 extends ApplicationAdapter {
 
 	TitleScreen title = new TitleScreen();
 	TitleText titleText;
+	OptionsScreen options = new OptionsScreen();
+	CharSelectScreen char_select = new CharSelectScreen();
+	// GameInterface game = new GameInterface();
+	// PauseScreen pausing = new PauseScreen();
 
 	BitmapFont menuFont;
+	BitmapFont titleFont;
+	BitmapFont offOption;
+	BitmapFont onOption;
+
+	static final Color GREEN = new Color(0, 1, 0, 1);
+	static final Color RED = new Color(1, 0, 0, 1);
 
 	float currTime;
 	int counter = 0;
@@ -321,6 +434,12 @@ public class Project2 extends ApplicationAdapter {
 		}
 	return regionArray;
 	}
+
+	void playSound(Sound s) {
+		if (!options.soundOff) {
+			s.play(); 
+		}
+	}
 	
 	@Override
 	public void create () {
@@ -335,6 +454,7 @@ public class Project2 extends ApplicationAdapter {
 
 		// AUDIO
 		boo = Gdx.audio.newSound(Gdx.files.internal("boo.wav"));
+		click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
 
 		// TITLE SCREEN
 		titleSheet = new Texture("titleText/run_run.png");
@@ -342,13 +462,28 @@ public class Project2 extends ApplicationAdapter {
 		titleText = new TitleText();
 
 		// custom text generator
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("couture-bld.otf"));
+		FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("couture-bld.otf"));
+		FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(Gdx.files.internal("fontClayToy.ttf"));
 
 		FreeTypeFontGenerator.FreeTypeFontParameter parMenu = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		FreeTypeFontGenerator.FreeTypeFontParameter parTitle = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		FreeTypeFontGenerator.FreeTypeFontParameter parOptionRed = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		FreeTypeFontGenerator.FreeTypeFontParameter parOptionGreen = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
 		parMenu.size = 30;
 
-		menuFont = generator.generateFont(parMenu);
+		parTitle.size = 90;
+
+		parOptionRed.size = 20;
+		parOptionRed.color = RED;
+
+		parOptionGreen.size = 20;
+		parOptionGreen.color = GREEN;
+
+		menuFont = generator1.generateFont(parMenu);
+		titleFont = generator2.generateFont(parTitle);
+		offOption = generator1.generateFont(parOptionRed);
+		onOption = generator1.generateFont(parOptionGreen);
 
 		Gdx.input.setInputProcessor(new InputProcessor());
 	}
@@ -364,13 +499,22 @@ public class Project2 extends ApplicationAdapter {
 
 		createBall();	// creates array of balls
 		// TITLE SCREEN
-		for (Ball ball: balls) {
-			ball.pos.position(ball_img);
-			ball_img.draw(batch);
-
-			if (!ball.tick()) {
-				trash_bin.add(ball);
+		if (title.isAtTitleScreen || options.isAtOptionsScreen) {
+			for (Ball ball: balls) {
+				ball.pos.position(ball_img);
+				ball_img.draw(batch);
+	
+				if (!ball.tick()) {
+					trash_bin.add(ball);
+				}
 			}
+		}
+
+		title.draw();
+		options.draw();
+
+		for (Boo boo: boos) {
+			boo_img.draw(batch);
 		}
 
 		for (Effect e : effects) {
@@ -380,11 +524,6 @@ public class Project2 extends ApplicationAdapter {
 		balls.removeAll(trash_bin);
 		effects.removeAll(trash_bin);
 		trash_bin.clear();
-
-		title.draw();
-		for (Boo boo: boos) {
-			boo_img.draw(batch);
-		}
 
 		batch.end();
 	}
@@ -398,5 +537,6 @@ public class Project2 extends ApplicationAdapter {
 		for (Sprite s: ball_splash_frames) s.getTexture().dispose();
 
 		boo.dispose();
+		click.dispose();
 	}
 }
