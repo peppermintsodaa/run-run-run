@@ -93,9 +93,6 @@ public class Project2 extends ApplicationAdapter {
 		public boolean mouseMoved (int screenX, int screenY) {
 			mouse_pos = new Coord(screenX, screen_size.y - screenY);
 
-			if (char_select.isAtCharScreen) {
-				
-			}
 			return true;
 		}
 	}
@@ -257,9 +254,18 @@ public class Project2 extends ApplicationAdapter {
                 titleFont.draw(batch, "SELECT CHARACTER", 250, 600);
 				menuFont.draw(batch, "GO BACK", 570, 100);
 
-				stickman = new Character(640, 320);
+				stickman.pos.x = 640;
+				stickman.pos.y = 320;
 				stickman.scale = 0.9f;
-				stickman.setState(states.get("stand/looking front"));
+				if (mouse_pos.x >= stickman.pos.x && mouse_pos.y >= 150 && mouse_pos.y <= 500) {
+					stickman.setState(states.get("stand/looking right"));
+				}
+				if (mouse_pos.x < stickman.pos.x && mouse_pos.y >= 150 && mouse_pos.y <= 500) {
+					stickman.setState(states.get("stand/looking left"));
+				}
+				if (mouse_pos.y < 150 || mouse_pos.y > 500) {
+					stickman.setState(states.get("stand/looking front"));
+				}
         	}
 		}
 
@@ -283,16 +289,12 @@ public class Project2 extends ApplicationAdapter {
 	}
 
 	public class Character {
-		Coord pos;
+		Coord pos = new Coord(0,0);
 		float scale = 1;
 
 		Sprite curFrame;
 		int duration;
 		int ticks;
-
-		Character(float x, float y) {
-			pos = new Coord(x,y);
-		}
 
 		float p () {
 			return ticks/(float)duration;
@@ -517,6 +519,7 @@ public class Project2 extends ApplicationAdapter {
 		createCharStates();
 
 		// ANIMATED SPRITES
+		stickman = new Character();
 		stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);
 
 		// AUDIO
