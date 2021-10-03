@@ -77,6 +77,8 @@ public class Project2 extends ApplicationAdapter {
 
 		public boolean touchUp (int screenX, int screenY, int pointer, int button)
 		{ 
+			mouse_pos = new Coord(screenX, screen_size.y - screenY);
+
 			if (title.isAtTitleScreen) {
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
 					boos.removeAll(boos);
@@ -101,56 +103,50 @@ public class Project2 extends ApplicationAdapter {
 	{
 		float x, y;
 
-		static Coord polar (double r, double theta)
-		{
-		return new Coord((float)Math.cos(theta)*r, (float)Math.sin(theta)*r);
+		static Coord polar (double r, double theta) {
+			return new Coord((float)Math.cos(theta)*r, (float)Math.sin(theta)*r);
 		}
 
-		Coord (double x, double y)
-		{
-		this.x = (float)x; this.y = (float)y;
+		Coord (double x, double y) {
+			this.x = (float)x; this.y = (float)y;
 		}
 
-		Coord rotated (double angle)
-		{
-		// Return a rotated vector by making a new one with the same radius
-		// and adding the angles.
-		return Coord.polar(radius(), angle + theta());
+		void setPosition(float x, float y) {
+			this.x = (float)x; this.y = (float)y;
 		}
 
-		float theta_deg ()
-		{
-		return (float)(theta() / (Math.PI*2) * 360);
+		Coord rotated (double angle) {
+			// Return a rotated vector by making a new one with the same radius
+			// and adding the angles.
+			return Coord.polar(radius(), angle + theta());
 		}
 
-		Coord theta_deg (double t)
-		{
-		return theta( (t / 360) * Math.PI*2 );
+		float theta_deg () {
+			return (float)(theta() / (Math.PI*2) * 360);
 		}
 
-		float theta ()
-		{
-		return (float)Math.atan2(y, x);
+		Coord theta_deg (double t) {
+			return theta( (t / 360) * Math.PI*2 );
 		}
 
-		Coord theta (double t)
-		{
-		return polar(radius(), t);
+		float theta () {
+			return (float)Math.atan2(y, x);
 		}
 
-		float radius ()
-		{
-		return (float)Math.sqrt(x*x+y*y);
+		Coord theta (double t) {
+			return polar(radius(), t);
 		}
 
-		Coord radius (double r)
-		{
-		return polar(r, theta());
+		float radius () {
+			return (float)Math.sqrt(x*x+y*y);
 		}
 
-		Coord plus (Coord o)
-		{
-		return new Coord(x+o.x, y+o.y);
+		Coord radius (double r) {
+			return polar(r, theta());
+		}
+
+		Coord plus (Coord o) {
+			return new Coord(x+o.x, y+o.y);
 		}
 
 		Coord minus (Coord o)
@@ -254,17 +250,39 @@ public class Project2 extends ApplicationAdapter {
                 titleFont.draw(batch, "SELECT CHARACTER", 250, 600);
 				menuFont.draw(batch, "GO BACK", 570, 100);
 
-				stickman.pos.x = 640;
-				stickman.pos.y = 320;
+				stickman.pos.setPosition(640,320);
 				stickman.scale = 0.9f;
-				if (mouse_pos.x >= stickman.pos.x && mouse_pos.y >= 150 && mouse_pos.y <= 500) {
+
+				BodyPart eye_l = new BodyPart(eye_img);
+				BodyPart eye_r = new BodyPart(eye_img);
+				BodyPart mouth = new BodyPart(mouth_img);
+				eye_l.pos.setPosition(stickman.pos.x - 15, 440);
+				eye_r.pos.setPosition(stickman.pos.x + 25, 440);
+				mouth.pos.setPosition(stickman.pos.x + 5, 410);
+
+				if (mouse_pos.x >= stickman.pos.x && mouse_pos.x <= stickman.pos.x + 200 && 
+					mouse_pos.y >= 150 && mouse_pos.y <= 500) {
 					stickman.setState(states.get("stand/looking right"));
+
+					eye_r.pos.setPosition(stickman.pos.x + 15, 440);
+					eye_r.draw();
+					mouth.draw();
 				}
-				if (mouse_pos.x < stickman.pos.x && mouse_pos.y >= 150 && mouse_pos.y <= 500) {
+				if (mouse_pos.x < stickman.pos.x && mouse_pos.x >= stickman.pos.x - 200 &&
+					mouse_pos.y >= 150 && mouse_pos.y <= 500) {
 					stickman.setState(states.get("stand/looking left"));
+					
+					eye_l.draw();
+					mouth.pos.setPosition(stickman.pos.x, 410);
+					mouth.draw();
 				}
-				if (mouse_pos.y < 150 || mouse_pos.y > 500) {
+				if (mouse_pos.x > stickman.pos.x + 200 || mouse_pos.x < stickman.pos.x - 200 || 
+					mouse_pos.y < 150 || mouse_pos.y > 500) {
 					stickman.setState(states.get("stand/looking front"));
+
+					eye_l.draw();
+					eye_r.draw();
+					mouth.draw();
 				}
         	}
 		}
@@ -280,6 +298,9 @@ public class Project2 extends ApplicationAdapter {
         }
     }
 
+	//----------------- C H A R A C T E R S ----------------//
+
+	// for some reason hash maps have to be created in a static env?
 	HashMap<String, Integer> states = new HashMap<>();
 
 	void createCharStates() {
@@ -288,7 +309,7 @@ public class Project2 extends ApplicationAdapter {
 		states.put("stand/looking right", 2);
 	}
 
-	public class Character {
+	class Character {
 		Coord pos = new Coord(0,0);
 		float scale = 1;
 
@@ -320,27 +341,58 @@ public class Project2 extends ApplicationAdapter {
 		}		
 	}
 
-	class TitleText {
-		Coord pos = new Coord(640, 500);
-		Sprite curFrame;
-		final int DELAY = 8; 	// plays every 2/15th second
+	class BodyPart {
+		Coord pos = new Coord(0,0);
+		float scale = 0.25f;
+		Sprite img;
 
-		void tick() {
-			int which = (int)((counter/DELAY) % titleFrames.size());
-			if (which >= titleFrames.size()) {
-				which = titleFrames.size() - 1;
-			}
-			curFrame = titleFrames.get(which);
-			
-			pos.position(curFrame);
-			curFrame.draw(batch);
+		BodyPart (Sprite img) {
+			this.img = img;
+		}
+
+		boolean draw () {
+			pos.position(img);
+			img.setScale(scale);
+			img.draw(batch);
+
+			return true;
 		}
 	}
+	/* // 👁
+	class Eye extends BodyPart {
+		boolean draw () {
+			curFrame = eye_img;
+			return super.draw();
+		}
+	} */
 
-	class Boo {
-		Boo (int x, int y) {
-			Coord pos = new Coord(x, y);
-			pos.position(boo_img);
+	//-------------------- E F F E C T S --------------------//
+
+	class Effect {
+		Sprite curFrame;
+		Coord pos;
+		Coord vel = new Coord(0,0);
+		float scale_min = 1;
+    	float scale_max = 1;
+
+		int duration;
+		int ticks;
+
+		float p () {
+			return ticks/(float)duration;
+		}
+
+		boolean draw () {
+			ticks++;
+			if (p() > 1) {
+				return false;
+			}
+
+			pos.position(curFrame);
+			curFrame.setScale(scale_min*(1-p()) + scale_max*p() );
+			curFrame.draw(batch);
+
+			return true;
 		}
 	}
 
@@ -371,34 +423,6 @@ public class Project2 extends ApplicationAdapter {
 				splash.scale_min = splash.scale_max = .5f;
 				splash.pos = new Coord(x, y);
 				effects.add(splash);
-		}
-	}
-
-	class Effect {
-		Sprite curFrame;
-		Coord pos;
-		Coord vel = new Coord(0,0);
-		float scale_min = 1;
-    	float scale_max = 1;
-
-		int duration;
-		int ticks;
-
-		float p () {
-			return ticks/(float)duration;
-		}
-
-		boolean draw () {
-			ticks++;
-			if (p() > 1) {
-				return false;
-			}
-
-			pos.position(curFrame);
-			curFrame.setScale(scale_min*(1-p()) + scale_max*p() );
-			curFrame.draw(batch);
-
-			return true;
 		}
 	}
 
@@ -439,6 +463,32 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	//------------------------ M I S C ------------------------//
+
+	class TitleText {
+		Coord pos = new Coord(640, 500);
+		Sprite curFrame;
+		final int DELAY = 8; 	// plays every 2/15th second
+
+		void tick() {
+			int which = (int)((counter/DELAY) % titleFrames.size());
+			if (which >= titleFrames.size()) {
+				which = titleFrames.size() - 1;
+			}
+			curFrame = titleFrames.get(which);
+			
+			pos.position(curFrame);
+			curFrame.draw(batch);
+		}
+	}
+
+	class Boo {
+		Boo (int x, int y) {
+			Coord pos = new Coord(x, y);
+			pos.position(boo_img);
+		}
+	}
+
 	//-------------------- V A R I A B L E S --------------------//
 
 	Coord screen_size;
@@ -447,6 +497,8 @@ public class Project2 extends ApplicationAdapter {
 	SpriteBatch batch;
 	Sprite ball_img;
 	Sprite boo_img;
+	Sprite eye_img;
+	Sprite mouth_img;
 
 	ArrayList<Sprite> stickman_sprites;
 	Character stickman;
@@ -515,6 +567,9 @@ public class Project2 extends ApplicationAdapter {
 
 		ball_img = new Sprite(new Texture(Gdx.files.internal("ball2.png")));
 		ball_img.setScale(0.5f);
+
+		eye_img = new Sprite(new Texture(Gdx.files.internal("eye.png")));
+		mouth_img = new Sprite(new Texture(Gdx.files.internal("mouth.png")));
 
 		createCharStates();
 
@@ -604,8 +659,10 @@ public class Project2 extends ApplicationAdapter {
 		batch.dispose();
 		boo_img.getTexture().dispose();
 		ball_img.getTexture().dispose();
-		for (Sprite s: ball_splash_frames) s.getTexture().dispose();
+		eye_img.getTexture().dispose();
+		for (Sprite f: ball_splash_frames) f.getTexture().dispose();
 		for (Sprite f: titleFrames) f.getTexture().dispose();
+		for (Sprite s: stickman_sprites) s.getTexture().dispose();
 
 		boo.dispose();
 		click.dispose();
