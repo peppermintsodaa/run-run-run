@@ -56,7 +56,7 @@ public class Project2 extends ApplicationAdapter {
 					return false;
 				}
 				// clicking on GO BACK
-				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 660)  {
+				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 655)  {
 					playSound(click);
 					options.close();
 					title.open();
@@ -65,10 +65,33 @@ public class Project2 extends ApplicationAdapter {
 			}
 			if (char_select.isAtCharScreen) {
 				// clicking on GO BACK
-				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 660)  {
+				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 655)  {
 					playSound(click);
 					char_select.close();
 					title.open();
+					return false;
+				}
+				// clicking on CHARACTER
+				if (screenX >= (stickman.pos.x - (stickman.dims.x / 2) - 15) && 
+					screenX <= (stickman.pos.x + (stickman.dims.x / 2) + 15) && 
+					(screen_size.y - screenY) >= (stickman.pos.y - (stickman.dims.y / 2) - 30) && 
+					(screen_size.y - screenY) <= (stickman.pos.y + (stickman.dims.y / 2) + 30)) {
+					// System.out.println(mouse_pos.x/10 + ", "+ mouse_pos.y/10);
+					playSound(run_90s_b);
+					return false;
+				}
+			}
+			if (game.isInGame) {
+				// clicking on random location
+				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490) {
+					if (!pausing.isPaused) {
+						pausing.open();
+						if (!options.soundOff) run_90s_a.pause();
+					}
+					else {
+						pausing.close();
+						if (!options.soundOff)run_90s_a.resume();
+					}
 					return false;
 				}
 			}
@@ -82,10 +105,22 @@ public class Project2 extends ApplicationAdapter {
 			if (title.isAtTitleScreen) {
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
 					boos.removeAll(boos);
-					balls.removeAll(balls);
 					playSound(click);
 					title.close();
 					char_select.open();
+					return false;
+				}
+			}
+			if (char_select.isAtCharScreen) {
+				// clicking on CHAR
+				if (screenX >= (stickman.pos.x - (stickman.dims.x / 2) - 15) && 
+					screenX <= (stickman.pos.x + (stickman.dims.x / 2) + 15) && 
+					(screen_size.y - screenY) >= (stickman.pos.y - (stickman.dims.y / 2) - 30) && 
+					(screen_size.y - screenY) <= (stickman.pos.y + (stickman.dims.y / 2) + 30)) {
+					// System.out.println(mouse_pos.x/10 + ", "+ mouse_pos.y/10);
+					char_select.close();
+					game.open();
+					if (!options.soundOff) run_90s_a.loop();
 					return false;
 				}
 			}
@@ -149,36 +184,40 @@ public class Project2 extends ApplicationAdapter {
 			return new Coord(x+o.x, y+o.y);
 		}
 
-		Coord minus (Coord o)
-		{
-		return new Coord(x-o.x, y-o.y);
+		Coord minus (Coord o) {
+			return new Coord(x-o.x, y-o.y);
 		}
 
-		Coord times (Coord o)
-		{
-		return new Coord(x*o.x, y*o.y);
+		Coord times (Coord o) {
+			return new Coord(x*o.x, y*o.y);
 		}
 
-		Coord times (double d)
-		{
-		return times(new Coord(d,d));
+		Coord times (double d) {
+			return times(new Coord(d,d));
 		}
 
-		Coord position (Sprite s)
-		{
-		s.setOriginBasedPosition(x, y);
-		return this;
+		Coord position (Sprite s) {
+			s.setOriginBasedPosition(x, y);
+			return this;
 		}
 
-		Coord rotation (Sprite s)
-		{
-		s.setRotation(theta_deg());
-		return this;
+		Coord dimensions (Sprite s, float scale, int rows, int cols) {
+			float width = (s.getTexture().getWidth() * scale) / cols;
+			float height = (s.getTexture().getHeight() * scale) / rows;
+	
+			this.x = width;
+			this.y = height;
+
+			return this;
 		}
 
-		public String toString ()
-		{
-		return "("+x+","+y+")";
+		Coord rotation (Sprite s) {
+			s.setRotation(theta_deg());
+			return this;
+		}
+
+		public String toString () {
+			return "("+x+","+y+")";
 		}
 	}
 
@@ -250,40 +289,7 @@ public class Project2 extends ApplicationAdapter {
                 titleFont.draw(batch, "SELECT CHARACTER", 250, 600);
 				menuFont.draw(batch, "GO BACK", 570, 100);
 
-				stickman.pos.setPosition(640,320);
-				stickman.scale = 0.9f;
-
-				BodyPart eye_l = new BodyPart(eye_img);
-				BodyPart eye_r = new BodyPart(eye_img);
-				BodyPart mouth = new BodyPart(mouth_img);
-				eye_l.pos.setPosition(stickman.pos.x - 15, 440);
-				eye_r.pos.setPosition(stickman.pos.x + 25, 440);
-				mouth.pos.setPosition(stickman.pos.x + 5, 410);
-
-				if (mouse_pos.x >= stickman.pos.x && mouse_pos.x <= stickman.pos.x + 200 && 
-					mouse_pos.y >= 150 && mouse_pos.y <= 500) {
-					stickman.setState(states.get("stand/looking right"));
-
-					eye_r.pos.setPosition(stickman.pos.x + 15, 440);
-					eye_r.draw();
-					mouth.draw();
-				}
-				if (mouse_pos.x < stickman.pos.x && mouse_pos.x >= stickman.pos.x - 200 &&
-					mouse_pos.y >= 150 && mouse_pos.y <= 500) {
-					stickman.setState(states.get("stand/looking left"));
-					
-					eye_l.draw();
-					mouth.pos.setPosition(stickman.pos.x, 410);
-					mouth.draw();
-				}
-				if (mouse_pos.x > stickman.pos.x + 200 || mouse_pos.x < stickman.pos.x - 200 || 
-					mouse_pos.y < 150 || mouse_pos.y > 500) {
-					stickman.setState(states.get("stand/looking front"));
-
-					eye_l.draw();
-					eye_r.draw();
-					mouth.draw();
-				}
+				drawCharacter(stickman, 640, 320);
         	}
 		}
 
@@ -295,6 +301,56 @@ public class Project2 extends ApplicationAdapter {
 		@Override
         public void open () {
             isAtCharScreen = true;
+        }
+    }
+
+	public class GameInterface implements ScreenMode {
+        boolean isInGame = false;
+        
+		@Override
+        public void draw () {
+            if (isInGame) {
+				pause.scale = 0.5f;
+
+                titleFont.draw(batch, "WIP", 340, 600);
+				hamster.tick();
+				pause.draw();
+			}
+		}
+
+		@Override
+        public void close () {
+            isInGame = false;
+        }
+
+		@Override
+        public void open () {
+            isInGame = true;
+        }
+    }
+
+	public class PauseScreen implements ScreenMode {
+        boolean isPaused = false;
+        
+		@Override
+        public void draw () {
+            if (isPaused) {
+				Coord pos = new Coord (0,0);
+				pos.position(grey_bg);
+				grey_bg.draw(batch);
+
+                titleFont.draw(batch, "PAUSED", 500, 400);
+			}
+		}
+
+		@Override
+        public void close () {
+            isPaused = false;
+        }
+
+		@Override
+        public void open () {
+            isPaused = true;
         }
     }
 
@@ -311,6 +367,9 @@ public class Project2 extends ApplicationAdapter {
 
 	class Character {
 		Coord pos = new Coord(0,0);
+		Coord dims = new Coord(0,0);
+		int rows = 1;	// if sprite sheet, specifies how many rows in sprite sheet
+		int cols = 1;	// if sprite sheet, specifies how many columns in sprite sheet
 		float scale = 1;
 
 		Sprite curFrame;
@@ -323,8 +382,10 @@ public class Project2 extends ApplicationAdapter {
 
 		boolean draw(ArrayList<Sprite> sprite_list, int state) {
 			curFrame = sprite_list.get(state);
+			// System.out.println(stickman.curFrame.getOriginX());
 			curFrame.setScale(scale);
 			pos.position(curFrame);
+			dims.dimensions(curFrame, scale, rows, cols);
 			curFrame.draw(batch);
 			return true;
 		}
@@ -343,6 +404,7 @@ public class Project2 extends ApplicationAdapter {
 
 	class BodyPart {
 		Coord pos = new Coord(0,0);
+		Coord dims = new Coord(0,0);
 		float scale = 0.25f;
 		Sprite img;
 
@@ -352,25 +414,59 @@ public class Project2 extends ApplicationAdapter {
 
 		boolean draw () {
 			pos.position(img);
+			dims.dimensions(img, scale, 1, 1);
 			img.setScale(scale);
 			img.draw(batch);
 
 			return true;
 		}
 	}
-	/* // 👁
-	class Eye extends BodyPart {
-		boolean draw () {
-			curFrame = eye_img;
-			return super.draw();
+
+	void drawCharacter(Character character, float x, float y) {
+		character.pos.setPosition(x,y);
+		character.rows = 1;
+		character.cols = 3;
+		character.scale = 0.9f;
+
+		BodyPart eye_l = new BodyPart(eye_img);
+		BodyPart eye_r = new BodyPart(eye_img);
+		BodyPart mouth = new BodyPart(mouth_img);
+		eye_l.pos.setPosition(character.pos.x - 15, 440);
+		eye_r.pos.setPosition(character.pos.x + 25, 440);
+		mouth.pos.setPosition(character.pos.x + 5, 410);
+
+		if (mouse_pos.x >= character.pos.x && mouse_pos.x <= character.pos.x + 200 && 
+			mouse_pos.y >= 150 && mouse_pos.y <= 500) {
+			character.setState(states.get("stand/looking right"));
+
+			eye_r.pos.setPosition(character.pos.x + 15, 440);
+			eye_r.draw();
+			mouth.draw();
 		}
-	} */
+		if (mouse_pos.x < character.pos.x && mouse_pos.x >= character.pos.x - 200 &&
+			mouse_pos.y >= 150 && mouse_pos.y <= 500) {
+			character.setState(states.get("stand/looking left"));
+			
+			eye_l.draw();
+			mouth.pos.setPosition(character.pos.x, 410);
+			mouth.draw();
+		}
+		if (mouse_pos.x > character.pos.x + 200 || mouse_pos.x < character.pos.x - 200 || 
+			mouse_pos.y < 150 || mouse_pos.y > 500) {
+			character.setState(states.get("stand/looking front"));
+
+			eye_l.draw();
+			eye_r.draw();
+			mouth.draw();
+		}
+	}
 
 	//-------------------- E F F E C T S --------------------//
 
 	class Effect {
 		Sprite curFrame;
 		Coord pos;
+		Coord dims;
 		Coord vel = new Coord(0,0);
 		float scale_min = 1;
     	float scale_max = 1;
@@ -427,7 +523,7 @@ public class Project2 extends ApplicationAdapter {
 	}
 
 	void createBall() {
-		if ((counter % 20) == 0) {
+		if ((titleCounter % 20) == 0) {
 			Ball b = new Ball();
 			balls.add(b);
 		}
@@ -463,22 +559,71 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	class Button {
+		Sprite img;
+		Coord pos;
+		Coord dims = new Coord(0,0);
+		float scale = 1;
+
+		Button(Sprite img, float x, float y) {
+			this.img = img;
+			this.pos = new Coord(x,y);
+		}
+
+		void draw () {
+			pos.position(img);
+			dims.dimensions(img, scale, 1, 1);
+			img.setScale(scale);
+			img.draw(batch);
+		}
+	}
+
+
 	//------------------------ M I S C ------------------------//
 
-	class TitleText {
-		Coord pos = new Coord(640, 500);
+	class Animated { 
+		Coord pos = new Coord(0,0);
+		float scale = 1;
+		ArrayList<Sprite> frameList;
 		Sprite curFrame;
-		final int DELAY = 8; 	// plays every 2/15th second
+		int counter;
+		int delay;				// plays every 2/15th second
 
 		void tick() {
-			int which = (int)((counter/DELAY) % titleFrames.size());
-			if (which >= titleFrames.size()) {
-				which = titleFrames.size() - 1;
+			int which = (int)((counter/delay) % frameList.size());
+			if (which >= frameList.size()) {
+				which = frameList.size() - 1;
 			}
-			curFrame = titleFrames.get(which);
+			curFrame = frameList.get(which);
+			curFrame.setScale(scale);
 			
 			pos.position(curFrame);
 			curFrame.draw(batch);
+		}
+	}
+	
+	class TitleText extends Animated {
+		void tick() {
+			counter = titleCounter;
+
+			pos.setPosition(640, 500);
+			frameList = titleFrames;
+			delay = 8; 	// plays every 2/15th second
+
+			super.tick();
+		}
+	}
+
+	class Hamster extends Animated {
+		void tick() {
+			counter = gameCounter;
+
+			pos.setPosition(640, 300);
+			frameList = hamFrames;
+			scale = 2.5f;
+			delay = 3; 	// plays every 1/15th second
+
+			super.tick();
 		}
 	}
 
@@ -488,52 +633,6 @@ public class Project2 extends ApplicationAdapter {
 			pos.position(boo_img);
 		}
 	}
-
-	//-------------------- V A R I A B L E S --------------------//
-
-	Coord screen_size;
-	Coord mouse_pos = new Coord(0,0);
-
-	SpriteBatch batch;
-	Sprite ball_img;
-	Sprite boo_img;
-	Sprite eye_img;
-	Sprite mouth_img;
-
-	ArrayList<Sprite> stickman_sprites;
-	Character stickman;
-
-	Sound boo;
-	Sound click;
-
-	ArrayList<Boo> boos = new ArrayList<Boo>();
-	ArrayList<Ball> balls = new ArrayList<Ball>();
-
-	ArrayList<Effect> effects = new ArrayList<Effect>();
-
-	ArrayList<Sprite> titleFrames;
-	Sprite currFrameTitle;
-
-	TitleScreen title = new TitleScreen();
-	TitleText titleText;
-	OptionsScreen options = new OptionsScreen();
-	CharSelectScreen char_select = new CharSelectScreen();
-	// GameInterface game = new GameInterface();
-	// PauseScreen pausing = new PauseScreen();
-
-	BitmapFont menuFont;
-	BitmapFont titleFont;
-	BitmapFont offOption;
-	BitmapFont onOption;
-
-	static final Color GREEN = new Color(0, 1, 0, 1);
-	static final Color RED = new Color(1, 0, 0, 1);
-
-	float currTime;
-	int counter = 0;
-	int again = 1;
-
-	//-----------------------------------------------------------//
 
 	// split texture sheets to use when animating sprite
 	ArrayList<Sprite> split(Texture img, ArrayList<Sprite> regionArray, int rows, int columns) {
@@ -556,6 +655,61 @@ public class Project2 extends ApplicationAdapter {
 			s.play(); 
 		}
 	}
+
+	//-------------------- V A R I A B L E S --------------------//
+
+	Coord screen_size;
+	Coord mouse_pos = new Coord(0,0);
+
+	SpriteBatch batch;
+	Sprite ball_img;
+	Sprite boo_img;
+	Sprite eye_img;
+	Sprite mouth_img;
+	Sprite pause_img;
+	Sprite grey_bg;
+
+	ArrayList<Sprite> stickman_sprites;
+	Character stickman;
+
+	Sound boo;
+	Sound click;
+	Sound run_90s_b;
+	Sound run_90s_a;
+
+	ArrayList<Boo> boos = new ArrayList<Boo>();
+	ArrayList<Ball> balls = new ArrayList<Ball>();
+
+	ArrayList<Effect> effects = new ArrayList<Effect>();
+
+	ArrayList<Sprite> titleFrames;
+	ArrayList<Sprite> hamFrames;
+
+	TitleText titleText;
+	Hamster hamster;
+
+	Button pause;
+
+	TitleScreen title = new TitleScreen();
+	OptionsScreen options = new OptionsScreen();
+	CharSelectScreen char_select = new CharSelectScreen();
+	GameInterface game = new GameInterface();
+	PauseScreen pausing = new PauseScreen();
+
+	BitmapFont menuFont;
+	BitmapFont titleFont;
+	BitmapFont offOption;
+	BitmapFont onOption;
+
+	static final Color GREEN = new Color(0, 1, 0, 1);
+	static final Color RED = new Color(1, 0, 0, 1);
+
+	float currTime;
+	int gameCounter = 0;
+	int titleCounter = 0;
+	int again = 1;
+
+	//-----------------------------------------------------------//
 	
 	@Override
 	public void create () {
@@ -571,19 +725,36 @@ public class Project2 extends ApplicationAdapter {
 		eye_img = new Sprite(new Texture(Gdx.files.internal("eye.png")));
 		mouth_img = new Sprite(new Texture(Gdx.files.internal("mouth.png")));
 
+		pause_img = new Sprite(new Texture(Gdx.files.internal("pause.png")));
+
+		grey_bg = new Sprite(new Texture(Gdx.files.internal("grey.png")), 1, 1);
+		grey_bg.setSize(screen_size.x, screen_size.y);
+		grey_bg.setColor(0,0,0,0.3f);
+
 		createCharStates();
 
 		// ANIMATED SPRITES
 		stickman = new Character();
 		stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);
 
+		hamFrames = split(new Texture("ham.png"), hamFrames, 14, 5);
+		hamFrames.remove(69);
+		hamFrames.remove(68);
+		hamFrames.remove(67);
+		hamster = new Hamster();
+
 		// AUDIO
 		boo = Gdx.audio.newSound(Gdx.files.internal("boo.wav"));
 		click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
+		run_90s_b = Gdx.audio.newSound(Gdx.files.internal("running90s_before.wav"));
+		run_90s_a = Gdx.audio.newSound(Gdx.files.internal("running90s_after.wav"));
 
-		// TITLE SCREEN
+		// TITLE
 		titleFrames = split(new Texture("titleText/run_run.png"), titleFrames, 5, 1);
 		titleText = new TitleText();
+
+		// BUTTON
+		pause = new Button(pause_img, screen_size.x - 35, screen_size.y - 35);
 
 		// custom text generator
 		FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("couture-bld.otf"));
@@ -615,15 +786,18 @@ public class Project2 extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
-		counter++;
+		if (game.isInGame && !pausing.isPaused) gameCounter++;
 		
 		batch.begin();
-
+		
+		// menuFont.draw(batch, "( " + mouse_pos.x/10 + ", " + mouse_pos.y/10 + ")" , 10, 30); 		// displays mouse position
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
 		// TITLE SCREEN / OPTIONS SCREEN
-		if (title.isAtTitleScreen || options.isAtOptionsScreen) {
+		if (title.isAtTitleScreen || options.isAtOptionsScreen || char_select.isAtCharScreen) {	
+			titleCounter++;
 			createBall();	// creates array of balls
+
 
 			for (Ball ball: balls) {
 				ball.pos.position(ball_img);
@@ -638,6 +812,8 @@ public class Project2 extends ApplicationAdapter {
 		title.draw();
 		options.draw();
 		char_select.draw();
+		game.draw();
+		pausing.draw();
 
 		for (Boo b: boos) {
 			boo_img.draw(batch);
@@ -660,12 +836,15 @@ public class Project2 extends ApplicationAdapter {
 		boo_img.getTexture().dispose();
 		ball_img.getTexture().dispose();
 		eye_img.getTexture().dispose();
+		grey_bg.getTexture().dispose();
 		for (Sprite f: ball_splash_frames) f.getTexture().dispose();
 		for (Sprite f: titleFrames) f.getTexture().dispose();
 		for (Sprite s: stickman_sprites) s.getTexture().dispose();
 
 		boo.dispose();
 		click.dispose();
+		run_90s_a.dispose();
+		run_90s_b.dispose();
 		
 		menuFont.dispose();
 		titleFont.dispose();
