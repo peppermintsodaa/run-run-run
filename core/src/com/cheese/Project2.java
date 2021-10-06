@@ -29,8 +29,7 @@ public class Project2 extends ApplicationAdapter {
 			if (title.isAtTitleScreen) {
 				// clicking on NEW GAME
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
-					Boo b = new Boo(530, 237);
-					boos.add(b);
+					b.booAppeared = true;
 					playSound(boo);
 					return false;
 				}
@@ -59,7 +58,9 @@ public class Project2 extends ApplicationAdapter {
 				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 655)  {
 					playSound(click);
 					options.close();
-					title.open();
+					if (!game.isInGame) {
+						title.open();
+					}
 					return false;
 				}
 			}
@@ -72,27 +73,40 @@ public class Project2 extends ApplicationAdapter {
 					return false;
 				}
 				// clicking on CHARACTER
-				if (screenX >= (stickman.pos.x - (stickman.dims.x / 2) - 15) && 
-					screenX <= (stickman.pos.x + (stickman.dims.x / 2) + 15) && 
-					(screen_size.y - screenY) >= (stickman.pos.y - (stickman.dims.y / 2) - 30) && 
-					(screen_size.y - screenY) <= (stickman.pos.y + (stickman.dims.y / 2) + 30)) {
+				if ((Math.abs(mouse_pos.minus(stickman.pos).x) < (stickman.dims.x / 2) + 15) && 
+					(Math.abs(mouse_pos.minus(stickman.pos).y) < (stickman.dims.y / 2) + 30)) {
 					// System.out.println(mouse_pos.x/10 + ", "+ mouse_pos.y/10);
 					playSound(run_90s_b);
 					return false;
 				}
 			}
 			if (game.isInGame) {
-				// clicking on random location
-				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490) {
+				// clicking on pause button
+				if (mouse_pos.minus(pause.pos).radius() < 25) {
 					if (!pausing.isPaused) {
+						playSound(click);
 						pausing.open();
-						if (!options.soundOff) run_90s_a.pause();
-					}
-					else {
-						pausing.close();
-						if (!options.soundOff)run_90s_a.resume();
 					}
 					return false;
+				}
+			}
+			if (pausing.isPaused) {
+				// clicking on OPTIONS
+				if (screenX >= 250 && screenX <= 360 && screenY >= 570 && screenY <= 605) {
+					options.open();
+					playSound(click);
+				}
+				// clicking on RESUME
+				if (screenX >= 570 && screenX <= 700 && screenY >= 570 && screenY <= 605) {
+					pausing.close();
+					playSound(click);
+				}
+				// clicking on GIVE UP
+				if (screenX >= 895 && screenX <= 1000 && screenY >= 570 && screenY <= 605) {
+					pausing.close();
+					game.close();
+					playSound(click);
+					title.open();
 				}
 			}
 			return true;
@@ -104,7 +118,7 @@ public class Project2 extends ApplicationAdapter {
 
 			if (title.isAtTitleScreen) {
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
-					boos.removeAll(boos);
+					b.booAppeared = false;
 					playSound(click);
 					title.close();
 					char_select.open();
@@ -113,14 +127,12 @@ public class Project2 extends ApplicationAdapter {
 			}
 			if (char_select.isAtCharScreen) {
 				// clicking on CHAR
-				if (screenX >= (stickman.pos.x - (stickman.dims.x / 2) - 15) && 
-					screenX <= (stickman.pos.x + (stickman.dims.x / 2) + 15) && 
-					(screen_size.y - screenY) >= (stickman.pos.y - (stickman.dims.y / 2) - 30) && 
-					(screen_size.y - screenY) <= (stickman.pos.y + (stickman.dims.y / 2) + 30)) {
+				if ((Math.abs(mouse_pos.minus(stickman.pos).x) < (stickman.dims.x / 2) + 15) && 
+					(Math.abs(mouse_pos.minus(stickman.pos).y) < (stickman.dims.y / 2) + 30)) 
+					 {
 					// System.out.println(mouse_pos.x/10 + ", "+ mouse_pos.y/10);
 					char_select.close();
 					game.open();
-					if (!options.soundOff) run_90s_a.loop();
 					return false;
 				}
 			}
@@ -131,93 +143,6 @@ public class Project2 extends ApplicationAdapter {
 			mouse_pos = new Coord(screenX, screen_size.y - screenY);
 
 			return true;
-		}
-	}
-
-	static class Coord
-	{
-		float x, y;
-
-		static Coord polar (double r, double theta) {
-			return new Coord((float)Math.cos(theta)*r, (float)Math.sin(theta)*r);
-		}
-
-		Coord (double x, double y) {
-			this.x = (float)x; this.y = (float)y;
-		}
-
-		void setPosition(float x, float y) {
-			this.x = (float)x; this.y = (float)y;
-		}
-
-		Coord rotated (double angle) {
-			// Return a rotated vector by making a new one with the same radius
-			// and adding the angles.
-			return Coord.polar(radius(), angle + theta());
-		}
-
-		float theta_deg () {
-			return (float)(theta() / (Math.PI*2) * 360);
-		}
-
-		Coord theta_deg (double t) {
-			return theta( (t / 360) * Math.PI*2 );
-		}
-
-		float theta () {
-			return (float)Math.atan2(y, x);
-		}
-
-		Coord theta (double t) {
-			return polar(radius(), t);
-		}
-
-		float radius () {
-			return (float)Math.sqrt(x*x+y*y);
-		}
-
-		Coord radius (double r) {
-			return polar(r, theta());
-		}
-
-		Coord plus (Coord o) {
-			return new Coord(x+o.x, y+o.y);
-		}
-
-		Coord minus (Coord o) {
-			return new Coord(x-o.x, y-o.y);
-		}
-
-		Coord times (Coord o) {
-			return new Coord(x*o.x, y*o.y);
-		}
-
-		Coord times (double d) {
-			return times(new Coord(d,d));
-		}
-
-		Coord position (Sprite s) {
-			s.setOriginBasedPosition(x, y);
-			return this;
-		}
-
-		Coord dimensions (Sprite s, float scale, int rows, int cols) {
-			float width = (s.getTexture().getWidth() * scale) / cols;
-			float height = (s.getTexture().getHeight() * scale) / rows;
-	
-			this.x = width;
-			this.y = height;
-
-			return this;
-		}
-
-		Coord rotation (Sprite s) {
-			s.setRotation(theta_deg());
-			return this;
-		}
-
-		public String toString () {
-			return "("+x+","+y+")";
 		}
 	}
 
@@ -311,10 +236,16 @@ public class Project2 extends ApplicationAdapter {
         public void draw () {
             if (isInGame) {
 				pause.scale = 0.5f;
+				run90s.duration = 726f;
 
-                titleFont.draw(batch, "WIP", 340, 600);
+                titleFont.draw(batch, "W.I.P", 340, 600);
 				hamster.tick();
+				run90s.tick();
 				pause.draw();
+			}
+			else {
+				run90s.soundCounter = 0;
+				run90s.music.stop();
 			}
 		}
 
@@ -339,7 +270,12 @@ public class Project2 extends ApplicationAdapter {
 				pos.position(grey_bg);
 				grey_bg.draw(batch);
 
-                titleFont.draw(batch, "PAUSED", 500, 400);
+                if (!options.isAtOptionsScreen) {
+					titleFont.draw(batch, "PAUSED", 500, 400);
+					menuFont.draw(batch, "OPTIONS", 250, 150);
+					menuFont.draw(batch, "RESUME", 575, 150);
+					menuFont.draw(batch, "GIVE UP", 900, 150);
+				}
 			}
 		}
 
@@ -578,6 +514,32 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	//----------------------- A U D I O -----------------------//
+	class BGM {
+		Sound music;
+		int soundCounter;
+		float duration; // calculate by number of seconds including milliseconds*60
+
+		BGM (Sound music) {
+			this.music = music;
+			this.soundCounter = 0;
+		}
+
+		void tick() {
+			if (game.isInGame) {
+				int length = (int)(soundCounter % duration);
+
+				if (!pausing.isPaused && !options.soundOff) 
+					soundCounter++;
+					if (length == 0) music.play();
+				if (pausing.isPaused || options.soundOff) {
+					music.pause();
+				}
+				else music.resume();
+			}
+		}
+	}
+
 
 	//------------------------ M I S C ------------------------//
 
@@ -628,6 +590,8 @@ public class Project2 extends ApplicationAdapter {
 	}
 
 	class Boo {
+		boolean booAppeared = false;
+
 		Boo (int x, int y) {
 			Coord pos = new Coord(x, y);
 			pos.position(boo_img);
@@ -636,14 +600,14 @@ public class Project2 extends ApplicationAdapter {
 
 	// split texture sheets to use when animating sprite
 	ArrayList<Sprite> split(Texture img, ArrayList<Sprite> regionArray, int rows, int columns) {
-		TextureRegion[][] tmp = TextureRegion.split(img,
+		TextureRegion[][] textReg = TextureRegion.split(img,
 			img.getWidth() / columns,
 			img.getHeight() / rows);
 
 		regionArray = new ArrayList<Sprite>(columns * rows);
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				Sprite s = new Sprite(tmp[i][j]);
+				Sprite s = new Sprite(textReg[i][j]);
 				regionArray.add(s);
 			}
 		}
@@ -677,7 +641,9 @@ public class Project2 extends ApplicationAdapter {
 	Sound run_90s_b;
 	Sound run_90s_a;
 
-	ArrayList<Boo> boos = new ArrayList<Boo>();
+	BGM run90s;
+
+	Boo b;
 	ArrayList<Ball> balls = new ArrayList<Ball>();
 
 	ArrayList<Effect> effects = new ArrayList<Effect>();
@@ -705,7 +671,7 @@ public class Project2 extends ApplicationAdapter {
 	static final Color RED = new Color(1, 0, 0, 1);
 
 	float currTime;
-	int gameCounter = 0;
+	int gameCounter;
 	int titleCounter = 0;
 	int again = 1;
 
@@ -749,9 +715,13 @@ public class Project2 extends ApplicationAdapter {
 		run_90s_b = Gdx.audio.newSound(Gdx.files.internal("running90s_before.wav"));
 		run_90s_a = Gdx.audio.newSound(Gdx.files.internal("running90s_after.wav"));
 
+		run90s = new BGM(run_90s_a);
+
 		// TITLE
 		titleFrames = split(new Texture("titleText/run_run.png"), titleFrames, 5, 1);
 		titleText = new TitleText();
+
+		b = new Boo(530, 237);
 
 		// BUTTON
 		pause = new Button(pause_img, screen_size.x - 35, screen_size.y - 35);
@@ -786,7 +756,11 @@ public class Project2 extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
-		if (game.isInGame && !pausing.isPaused) gameCounter++;
+		if (game.isInGame && !pausing.isPaused) {
+			gameCounter++;
+			System.out.println(gameCounter);
+		}
+		if (!game.isInGame) gameCounter = 0;
 		
 		batch.begin();
 		
@@ -794,11 +768,11 @@ public class Project2 extends ApplicationAdapter {
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
 		// TITLE SCREEN / OPTIONS SCREEN
-		if (title.isAtTitleScreen || options.isAtOptionsScreen || char_select.isAtCharScreen) {	
+		if ((title.isAtTitleScreen || options.isAtOptionsScreen || char_select.isAtCharScreen) && !game.isInGame) {	
 			titleCounter++;
 			createBall();	// creates array of balls
 
-
+			// draws balls
 			for (Ball ball: balls) {
 				ball.pos.position(ball_img);
 				ball_img.draw(batch);
@@ -808,16 +782,17 @@ public class Project2 extends ApplicationAdapter {
 				}
 			}
 		}
-
+		else balls.removeAll(balls);	// respawns balls when moved to title screen
+		
+		// menu screen drawing
 		title.draw();
-		options.draw();
 		char_select.draw();
 		game.draw();
 		pausing.draw();
+		options.draw();
 
-		for (Boo b: boos) {
-			boo_img.draw(batch);
-		}
+		// boo appears
+		if (b.booAppeared) boo_img.draw(batch);
 
 		for (Effect e : effects) {
 			if (e.draw() == false) trash_bin.add(e);
