@@ -1,0 +1,21 @@
+run_run.png
+  size:800, 500
+  format: RGBA8888
+  filter: Linear, Linear
+  repeat: none
+  pma: false
+s
+  bounds: 0, 0, 800, 100
+  index: 0
+s
+  bounds: 0, 100, 800, 100
+  index: 1
+s
+  bounds: 0, 200, 800, 100
+  index: 2
+s
+  bounds: 0, 300, 800, 100
+  index: 3
+s
+  bounds: 0, 400, 800, 100
+  index: 4

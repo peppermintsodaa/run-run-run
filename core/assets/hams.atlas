@@ -1,0 +1,207 @@
+ham.png
+  size:280, 784
+  format: RGBA8888
+  filter: Linear, Linear
+  repeat: none
+  pma: false
+s
+  bounds: 0, 0, 56, 56
+  index: 0
+s
+  bounds: 56, 0, 56, 56
+  index: 1
+s
+  bounds: 112, 0, 56, 56
+  index: 2
+s
+  bounds: 168, 0, 56, 56
+  index: 3
+s
+  bounds: 224, 0, 56, 56
+  index: 4
+s
+  bounds: 0, 56, 56, 56
+  index: 5
+s
+  bounds: 56, 56, 56, 56
+  index: 6
+s
+  bounds: 112, 56, 56, 56
+  index: 7
+s
+  bounds: 168, 56, 56, 56
+  index: 8
+s
+  bounds: 224, 56, 56, 56
+  index: 9
+s
+  bounds: 0, 112, 56, 56
+  index: 10
+s
+  bounds: 56, 112, 56, 56
+  index: 11
+s
+  bounds: 112, 112, 56, 56
+  index: 12
+s
+  bounds: 168, 112, 56, 56
+  index: 13
+s
+  bounds: 224, 112, 56, 56
+  index: 14
+s
+  bounds: 0, 168, 56, 56
+  index: 15
+s
+  bounds: 56, 168, 56, 56
+  index: 16
+s
+  bounds: 112, 168, 56, 56
+  index: 17
+s
+  bounds: 168, 168, 56, 56
+  index: 18
+s
+  bounds: 224, 168, 56, 56
+  index: 19
+s
+  bounds: 0, 224, 56, 56
+  index: 20
+s
+  bounds: 56, 224, 56, 56
+  index: 21
+s
+  bounds: 112, 224, 56, 56
+  index: 22
+s
+  bounds: 168, 224, 56, 56
+  index: 23
+s
+  bounds: 224, 224, 56, 56
+  index: 24
+s
+  bounds: 0, 280, 56, 56
+  index: 25
+s
+  bounds: 56, 280, 56, 56
+  index: 26
+s
+  bounds: 112, 280, 56, 56
+  index: 27
+s
+  bounds: 168, 280, 56, 56
+  index: 28
+s
+  bounds: 224, 280, 56, 56
+  index: 29
+s
+  bounds: 0, 336, 56, 56
+  index: 30
+s
+  bounds: 56, 336, 56, 56
+  index: 31
+s
+  bounds: 112, 336, 56, 56
+  index: 32
+s
+  bounds: 168, 336, 56, 56
+  index: 33
+s
+  bounds: 224, 336, 56, 56
+  index: 34
+s
+  bounds: 0, 392, 56, 56
+  index: 35
+s
+  bounds: 56, 392, 56, 56
+  index: 36
+s
+  bounds: 112, 392, 56, 56
+  index: 37
+s
+  bounds: 168, 392, 56, 56
+  index: 38
+s
+  bounds: 224, 392, 56, 56
+  index: 39
+s
+  bounds: 0, 448, 56, 56
+  index: 40
+s
+  bounds: 56, 448, 56, 56
+  index: 41
+s
+  bounds: 112, 448, 56, 56
+  index: 42
+s
+  bounds: 168, 448, 56, 56
+  index: 43
+s
+  bounds: 224, 448, 56, 56
+  index: 44
+s
+  bounds: 0, 504, 56, 56
+  index: 45
+s
+  bounds: 56, 504, 56, 56
+  index: 46
+s
+  bounds: 112, 504, 56, 56
+  index: 47
+s
+  bounds: 168, 504, 56, 56
+  index: 48
+s
+  bounds: 224, 504, 56, 56
+  index: 49
+s
+  bounds: 0, 560, 56, 56
+  index: 50
+s
+  bounds: 56, 560, 56, 56
+  index: 51
+s
+  bounds: 112, 560, 56, 56
+  index: 52
+s
+  bounds: 168, 560, 56, 56
+  index: 53
+s
+  bounds: 224, 560, 56, 56
+  index: 54
+s
+  bounds: 0, 616, 56, 56
+  index: 55
+s
+  bounds: 56, 616, 56, 56
+  index: 56
+s
+  bounds: 112, 616, 56, 56
+  index: 57
+s
+  bounds: 168, 616, 56, 56
+  index: 58
+s
+  bounds: 224, 616, 56, 56
+  index: 59
+s
+  bounds: 0, 672, 56, 56
+  index: 60
+s
+  bounds: 56, 672, 56, 56
+  index: 61
+s
+  bounds: 112, 672, 56, 56
+  index: 62
+s
+  bounds: 168, 672, 56, 56
+  index: 63
+s
+  bounds: 224, 672, 56, 56
+  index: 64
+s
+  bounds: 0, 728, 56, 56
+  index: 65
+s
+  bounds: 56, 728, 56, 56
+  index: 66

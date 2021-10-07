@@ -1,0 +1,15 @@
+stickman.png
+size:627, 381
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+pma: false
+s0_0
+  bounds: 0, 0, 209, 381
+  index: 0
+s1_0
+  bounds: 209, 0, 209, 381
+  index: 1
+s2_0
+  bounds: 418, 0, 209, 381
+  index: 2

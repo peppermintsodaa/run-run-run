@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator; // custom font generator package
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Gdx;
 
@@ -18,6 +20,10 @@ import com.badlogic.gdx.audio.Sound;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+/* future implementations:
+- rewriting input processor to incorporate some sort of bound for text options 
+*/
 
 public class Project2 extends ApplicationAdapter {
 	public class InputProcessor extends InputAdapter
@@ -117,6 +123,7 @@ public class Project2 extends ApplicationAdapter {
 			mouse_pos = new Coord(screenX, screen_size.y - screenY);
 
 			if (title.isAtTitleScreen) {
+				// clicking on NEW GAME
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
 					b.booAppeared = false;
 					playSound(click);
@@ -126,7 +133,7 @@ public class Project2 extends ApplicationAdapter {
 				}
 			}
 			if (char_select.isAtCharScreen) {
-				// clicking on CHAR
+				// clicking on CHARACTER
 				if ((Math.abs(mouse_pos.minus(stickman.pos).x) < (stickman.dims.x / 2) + 15) && 
 					(Math.abs(mouse_pos.minus(stickman.pos).y) < (stickman.dims.y / 2) + 30)) 
 					 {
@@ -316,7 +323,7 @@ public class Project2 extends ApplicationAdapter {
 			return ticks/(float)duration;
 		}
 
-		boolean draw(ArrayList<Sprite> sprite_list, int state) {
+		boolean draw(Array<Sprite> sprite_list, int state) {
 			curFrame = sprite_list.get(state);
 			// System.out.println(stickman.curFrame.getOriginX());
 			curFrame.setScale(scale);
@@ -546,15 +553,15 @@ public class Project2 extends ApplicationAdapter {
 	class Animated { 
 		Coord pos = new Coord(0,0);
 		float scale = 1;
-		ArrayList<Sprite> frameList;
+		Array<Sprite> frameList;
 		Sprite curFrame;
 		int counter;
 		int delay;				// plays every 2/15th second
 
 		void tick() {
-			int which = (int)((counter/delay) % frameList.size());
-			if (which >= frameList.size()) {
-				which = frameList.size() - 1;
+			int which = (int)((counter/delay) % frameList.size);
+			if (which >= frameList.size) {
+				which = frameList.size - 1;
 			}
 			curFrame = frameList.get(which);
 			curFrame.setScale(scale);
@@ -589,6 +596,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	// little boo icon appearing in title screen
 	class Boo {
 		boolean booAppeared = false;
 
@@ -598,7 +606,22 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
-	// split texture sheets to use when animating sprite
+	// loads sprites into an array to use for animating
+	Array<Sprite> loadSprites(String atlas_name, String sprite_name) {
+		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(atlas_name + ".atlas"));
+		atlas.findRegions(sprite_name);
+		Array<Sprite> sprites = atlas.createSprites();
+		return sprites;
+	}
+
+	void playSound(Sound s) {
+		if (!options.soundOff) {
+			s.play(); 
+		}
+	}
+
+	// alt method for separating sprites
+	/* / split texture sheets to use when animating sprite
 	ArrayList<Sprite> split(Texture img, ArrayList<Sprite> regionArray, int rows, int columns) {
 		TextureRegion[][] textReg = TextureRegion.split(img,
 			img.getWidth() / columns,
@@ -612,13 +635,7 @@ public class Project2 extends ApplicationAdapter {
 			}
 		}
 	return regionArray;
-	}
-
-	void playSound(Sound s) {
-		if (!options.soundOff) {
-			s.play(); 
-		}
-	}
+	} */
 
 	//-------------------- V A R I A B L E S --------------------//
 
@@ -633,7 +650,9 @@ public class Project2 extends ApplicationAdapter {
 	Sprite pause_img;
 	Sprite grey_bg;
 
-	ArrayList<Sprite> stickman_sprites;
+	TextureAtlas atlas;
+	TextureRegion stickmanTexture, hamTexture, titleTexture;
+	Array<Sprite> stickman_sprites;
 	Character stickman;
 
 	Sound boo;
@@ -648,8 +667,8 @@ public class Project2 extends ApplicationAdapter {
 
 	ArrayList<Effect> effects = new ArrayList<Effect>();
 
-	ArrayList<Sprite> titleFrames;
-	ArrayList<Sprite> hamFrames;
+	Array<Sprite> titleFrames;
+	Array<Sprite> hamFrames;
 
 	TitleText titleText;
 	Hamster hamster;
@@ -673,7 +692,7 @@ public class Project2 extends ApplicationAdapter {
 	float currTime;
 	int gameCounter;
 	int titleCounter = 0;
-	int again = 1;
+	// int again = 1;
 
 	//-----------------------------------------------------------//
 	
@@ -701,12 +720,11 @@ public class Project2 extends ApplicationAdapter {
 
 		// ANIMATED SPRITES
 		stickman = new Character();
-		stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);
+		stickman_sprites = loadSprites("stickman", "s");
+		// stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);
 
-		hamFrames = split(new Texture("ham.png"), hamFrames, 14, 5);
-		hamFrames.remove(69);
-		hamFrames.remove(68);
-		hamFrames.remove(67);
+		// hamFrames = split(new Texture("ham.png"), hamFrames, 14, 5);
+		hamFrames = loadSprites("hams", "s");
 		hamster = new Hamster();
 
 		// AUDIO
@@ -718,7 +736,8 @@ public class Project2 extends ApplicationAdapter {
 		run90s = new BGM(run_90s_a);
 
 		// TITLE
-		titleFrames = split(new Texture("titleText/run_run.png"), titleFrames, 5, 1);
+		// titleFrames = split(new Texture("titleText/run_run.png"), titleFrames, 5, 1);
+		titleFrames = loadSprites("titleText/titleText", "s");
 		titleText = new TitleText();
 
 		b = new Boo(530, 237);
