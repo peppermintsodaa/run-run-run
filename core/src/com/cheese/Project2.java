@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator; // custom font generator package
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -81,7 +80,6 @@ public class Project2 extends ApplicationAdapter {
 				// clicking on CHARACTER
 				if ((Math.abs(mouse_pos.minus(stickman.pos).x) < (stickman.dims.x / 2) + 15) && 
 					(Math.abs(mouse_pos.minus(stickman.pos).y) < (stickman.dims.y / 2) + 30)) {
-					// System.out.println(mouse_pos.x/10 + ", "+ mouse_pos.y/10);
 					playSound(run_90s_b);
 					return false;
 				}
@@ -135,9 +133,7 @@ public class Project2 extends ApplicationAdapter {
 			if (char_select.isAtCharScreen) {
 				// clicking on CHARACTER
 				if ((Math.abs(mouse_pos.minus(stickman.pos).x) < (stickman.dims.x / 2) + 15) && 
-					(Math.abs(mouse_pos.minus(stickman.pos).y) < (stickman.dims.y / 2) + 30)) 
-					 {
-					// System.out.println(mouse_pos.x/10 + ", "+ mouse_pos.y/10);
+					(Math.abs(mouse_pos.minus(stickman.pos).y) < (stickman.dims.y / 2) + 30)) {
 					char_select.close();
 					game.open();
 					return false;
@@ -274,6 +270,7 @@ public class Project2 extends ApplicationAdapter {
         public void draw () {
             if (isPaused) {
 				Coord pos = new Coord (0,0);
+				// grey background that appears when pausing
 				pos.position(grey_bg);
 				grey_bg.draw(batch);
 
@@ -302,6 +299,7 @@ public class Project2 extends ApplicationAdapter {
 	// for some reason hash maps have to be created in a static env?
 	HashMap<String, Integer> states = new HashMap<>();
 
+	// list of character states
 	void createCharStates() {
 		states.put("stand/looking front", 0);
 		states.put("stand/looking left", 1);
@@ -311,8 +309,6 @@ public class Project2 extends ApplicationAdapter {
 	class Character {
 		Coord pos = new Coord(0,0);
 		Coord dims = new Coord(0,0);
-		int rows = 1;	// if sprite sheet, specifies how many rows in sprite sheet
-		int cols = 1;	// if sprite sheet, specifies how many columns in sprite sheet
 		float scale = 1;
 
 		Sprite curFrame;
@@ -323,16 +319,17 @@ public class Project2 extends ApplicationAdapter {
 			return ticks/(float)duration;
 		}
 
+		// draws character in current state
 		boolean draw(Array<Sprite> sprite_list, int state) {
 			curFrame = sprite_list.get(state);
-			// System.out.println(stickman.curFrame.getOriginX());
 			curFrame.setScale(scale);
 			pos.position(curFrame);
-			dims.dimensions(curFrame, scale, rows, cols);
+			dims.dimensions(curFrame, scale);
 			curFrame.draw(batch);
 			return true;
 		}
 
+		// sets state of character based on index corresponding to hash map
 		void setState(int state) {
 			switch (state) {
 				case 1: draw(stickman_sprites, 1);
@@ -345,9 +342,9 @@ public class Project2 extends ApplicationAdapter {
 		}		
 	}
 
+	// body parts to add onto character
 	class BodyPart {
 		Coord pos = new Coord(0,0);
-		Coord dims = new Coord(0,0);
 		float scale = 0.25f;
 		Sprite img;
 
@@ -357,7 +354,6 @@ public class Project2 extends ApplicationAdapter {
 
 		boolean draw () {
 			pos.position(img);
-			dims.dimensions(img, scale, 1, 1);
 			img.setScale(scale);
 			img.draw(batch);
 
@@ -365,10 +361,12 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	// draws character in character select screen. needs to be updated to apply for any character
+	// in any position
 	void drawCharacter(Character character, float x, float y) {
 		character.pos.setPosition(x,y);
-		character.rows = 1;
-		character.cols = 3;
+		// character.rows = 1;
+		// character.cols = 3;
 		character.scale = 0.9f;
 
 		BodyPart eye_l = new BodyPart(eye_img);
@@ -406,6 +404,7 @@ public class Project2 extends ApplicationAdapter {
 
 	//-------------------- E F F E C T S --------------------//
 
+	// generic effect class [stolen from example code pls don't hurt me]
 	class Effect {
 		Sprite curFrame;
 		Coord pos;
@@ -435,9 +434,10 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	// ball objects falling down in title screen
 	class Ball {
-		Coord pos = new Coord((int)(Math.random()*(screen_size.x+1)),screen_size.y+30);
-    	Coord vel = new Coord(0,(int)(Math.random()*(5-2+1)+2));
+		Coord pos = new Coord((int)(Math.random()*(screen_size.x+1)),screen_size.y+30);		// determines ball's location at top of screen
+    	Coord vel = new Coord(0,(int)(Math.random()*(5-2+1)+2));							// determines ball's random velocity 
     	Coord accel = new Coord(0, -0.5f);
 
 		boolean tick () {
@@ -456,6 +456,7 @@ public class Project2 extends ApplicationAdapter {
 			return true;
 		}
 
+		// plays splash effect
 		void playSplash(float x, float y) {
 			BallSplash splash = new BallSplash();
 				splash.duration = 9;
@@ -465,6 +466,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	// initiates ball object
 	void createBall() {
 		if ((titleCounter % 20) == 0) {
 			Ball b = new Ball();
@@ -474,6 +476,7 @@ public class Project2 extends ApplicationAdapter {
 
 	ArrayList<Sprite> ball_splash_frames;
 
+	// loads the ball splashing sprites
 	ArrayList<Sprite> createBallEffect() {
 		if (ball_splash_frames != null) {
 			return ball_splash_frames;
@@ -489,6 +492,7 @@ public class Project2 extends ApplicationAdapter {
 		return ball_splash_frames;
 	}
 
+	// ball splash effect for ball object
 	class BallSplash extends Effect {
 		ArrayList<Sprite> splash_frames = createBallEffect();
 
@@ -502,10 +506,10 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	// button object to press on
 	class Button {
 		Sprite img;
 		Coord pos;
-		Coord dims = new Coord(0,0);
 		float scale = 1;
 
 		Button(Sprite img, float x, float y) {
@@ -515,17 +519,17 @@ public class Project2 extends ApplicationAdapter {
 
 		void draw () {
 			pos.position(img);
-			dims.dimensions(img, scale, 1, 1);
 			img.setScale(scale);
 			img.draw(batch);
 		}
 	}
 
 	//----------------------- A U D I O -----------------------//
+	// background music for game
 	class BGM {
 		Sound music;
 		int soundCounter;
-		float duration; // calculate by number of seconds including milliseconds*60
+		float duration; 	// calculate by number of seconds including milliseconds*60
 
 		BGM (Sound music) {
 			this.music = music;
@@ -550,13 +554,14 @@ public class Project2 extends ApplicationAdapter {
 
 	//------------------------ M I S C ------------------------//
 
+	// creates an animated miscellaneous object
 	class Animated { 
 		Coord pos = new Coord(0,0);
 		float scale = 1;
 		Array<Sprite> frameList;
 		Sprite curFrame;
 		int counter;
-		int delay;				// plays every 2/15th second
+		int delay;
 
 		void tick() {
 			int which = (int)((counter/delay) % frameList.size);
@@ -571,6 +576,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 	
+	// animating title text
 	class TitleText extends Animated {
 		void tick() {
 			counter = titleCounter;
@@ -583,6 +589,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 	}
 
+	// dancing hamster in WIP game screen
 	class Hamster extends Animated {
 		void tick() {
 			counter = gameCounter;
@@ -614,6 +621,7 @@ public class Project2 extends ApplicationAdapter {
 		return sprites;
 	}
 
+	// plays any sound if sound is on
 	void playSound(Sound s) {
 		if (!options.soundOff) {
 			s.play(); 
@@ -650,8 +658,6 @@ public class Project2 extends ApplicationAdapter {
 	Sprite pause_img;
 	Sprite grey_bg;
 
-	TextureAtlas atlas;
-	TextureRegion stickmanTexture, hamTexture, titleTexture;
 	Array<Sprite> stickman_sprites;
 	Character stickman;
 
@@ -692,7 +698,6 @@ public class Project2 extends ApplicationAdapter {
 	float currTime;
 	int gameCounter;
 	int titleCounter = 0;
-	// int again = 1;
 
 	//-----------------------------------------------------------//
 	
@@ -721,11 +726,13 @@ public class Project2 extends ApplicationAdapter {
 		// ANIMATED SPRITES
 		stickman = new Character();
 		stickman_sprites = loadSprites("stickman", "s");
-		// stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);
 
-		// hamFrames = split(new Texture("ham.png"), hamFrames, 14, 5);
 		hamFrames = loadSprites("hams", "s");
 		hamster = new Hamster();
+
+		// ALT METHODS
+		// stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);
+		// hamFrames = split(new Texture("ham.png"), hamFrames, 14, 5);
 
 		// AUDIO
 		boo = Gdx.audio.newSound(Gdx.files.internal("boo.wav"));
@@ -736,16 +743,19 @@ public class Project2 extends ApplicationAdapter {
 		run90s = new BGM(run_90s_a);
 
 		// TITLE
-		// titleFrames = split(new Texture("titleText/run_run.png"), titleFrames, 5, 1);
 		titleFrames = loadSprites("titleText/titleText", "s");
 		titleText = new TitleText();
 
+		// ALT METHOD
+		// titleFrames = split(new Texture("titleText/run_run.png"), titleFrames, 5, 1);
+
+		// boo c:
 		b = new Boo(530, 237);
 
 		// BUTTON
 		pause = new Button(pause_img, screen_size.x - 35, screen_size.y - 35);
 
-		// custom text generator
+		// TEXT
 		FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("couture-bld.otf"));
 		FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(Gdx.files.internal("fontClayToy.ttf"));
 
@@ -769,6 +779,7 @@ public class Project2 extends ApplicationAdapter {
 		offOption = generator1.generateFont(parOptionRed);
 		onOption = generator1.generateFont(parOptionGreen);
 
+		// INPUT PROCESSOR
 		Gdx.input.setInputProcessor(new InputProcessor());
 	}
 
@@ -777,7 +788,6 @@ public class Project2 extends ApplicationAdapter {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
 		if (game.isInGame && !pausing.isPaused) {
 			gameCounter++;
-			System.out.println(gameCounter);
 		}
 		if (!game.isInGame) gameCounter = 0;
 		
@@ -831,8 +841,10 @@ public class Project2 extends ApplicationAdapter {
 		ball_img.getTexture().dispose();
 		eye_img.getTexture().dispose();
 		grey_bg.getTexture().dispose();
+		pause_img.getTexture().dispose();
 		for (Sprite f: ball_splash_frames) f.getTexture().dispose();
 		for (Sprite f: titleFrames) f.getTexture().dispose();
+		for (Sprite f: hamFrames) f.getTexture().dispose();
 		for (Sprite s: stickman_sprites) s.getTexture().dispose();
 
 		boo.dispose();
