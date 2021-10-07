@@ -69,9 +69,9 @@ public class Coord
 			return this;
 		}
 
-		Coord dimensions (Sprite s, float scale, int rows, int cols) {
-			float width = (s.getTexture().getWidth() * scale) / cols;
-			float height = (s.getTexture().getHeight() * scale) / rows;
+		Coord dimensions (Sprite s, float scale) {
+			float width = (s.getWidth() * scale);
+			float height = (s.getHeight() * scale);
 	
 			this.x = width;
 			this.y = height;
