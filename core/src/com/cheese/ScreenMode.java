@@ -1,8 +1,15 @@
-
 package com.cheese;
 
-public interface ScreenMode {
-    public void draw ();
-    public void close ();
-    public void open ();    
+public class ScreenMode {
+    boolean isAtScreen = true;
+
+    public void draw() {};
+
+    public void close () {
+        isAtScreen = false;
+    }
+
+	public void open () {
+        isAtScreen = true;
+    }
 }
