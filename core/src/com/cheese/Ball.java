@@ -31,7 +31,7 @@ public class Ball {
     }
 
     void playSplash(float x, float y) {
-        BallSplash splash = new BallSplash(Project2.var_list.batch);
+        BallSplash splash = new BallSplash(Project2.sprites.batch);
         splash.duration = 9;
         splash.scale_min = splash.scale_max = .5f;
         splash.pos = new Coord(x, y);
@@ -75,9 +75,9 @@ public class Ball {
         }
     }
 
-    void drawBalls(Ball ball, ArrayList<Object> trash) {
-        ball.pos.position(Project2.var_list.ball_img);
-        Project2.var_list.ball_img.draw(Project2.var_list.batch);
+    void draw(Ball ball, ArrayList<Object> trash) {
+        ball.pos.position(Project2.sprites.ball_img);
+        Project2.sprites.ball_img.draw(Project2.sprites.batch);
 
         if (!ball.tick()) {
             trash.add(ball);

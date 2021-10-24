@@ -4,15 +4,10 @@ import com.cheese.Project2.*;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.audio.Sound;
@@ -24,14 +19,6 @@ public class VariableList {
 	Coord mouse_pos = new Coord(0,0);
 
 	OrthographicCamera camera;
-
-	SpriteBatch batch;
-	Sprite ball_img;
-	Sprite boo_img;
-	Sprite pause_img;
-	Sprite grey_bg;
-	Sprite eye_img;
-	Sprite mouth_img;
 
 	Character stickman;
 	CharacterV stickmanV;
@@ -48,9 +35,6 @@ public class VariableList {
 
 	ArrayList<Effect> effects = new ArrayList<Effect>();
 
-	Array<Sprite> titleFrames;
-	Array<Sprite> hamFrames;
-
 	TitleText titleText;
 	Hamster hamster;
 
@@ -65,7 +49,7 @@ public class VariableList {
     ScreenModes.TitleScreen title;
 	ScreenModes.OptionsScreen options;
 	ScreenModes.CharSelectScreen char_select;
-	ScreenModes.GameInterface game;
+	ScreenModes.GameScreen game;
 	ScreenModes.PauseScreen pausing;
 
 	float currTime;
@@ -77,29 +61,17 @@ public class VariableList {
 
     VariableList() {
         this.screen_size = new Coord(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		this.batch = new SpriteBatch();
 
 		this.camera = new OrthographicCamera();
 
-		// SPRITES        
-        this.boo_img = new Sprite(new Texture(Gdx.files.internal("boo.png")));
-
-		this.ball_img = new Sprite(new Texture(Gdx.files.internal("ball2.png")));
-		ball_img.setScale(0.5f);
-
-		this.eye_img = new Sprite(new Texture(Gdx.files.internal("eye.png")));
-		this.mouth_img = new Sprite(new Texture(Gdx.files.internal("mouth.png")));
-
-		this.pause_img = new Sprite(new Texture(Gdx.files.internal("pause.png")));
-
-		this.grey_bg = new Sprite(new Texture(Gdx.files.internal("grey.png")), 1, 1);
-		grey_bg.setSize(this.screen_size.x, this.screen_size.y);
-		grey_bg.setColor(0,0,0,0.3f);
+		// MODIFYING SPRITES
+		Project2.sprites.grey_bg.setSize(screen_size.x, screen_size.y);
+		Project2.sprites.grey_bg.setColor(0,0,0,0.3f);
 
         // ANIMATED SPRITES
-		this.stickman = new Character(batch);
-		this.stickmanV = new CharacterV(batch, "eye.png", "mouth.png");
-        stickmanV.sprites = loadSprites("stickman", "s");
+		this.stickman = new Character(Project2.sprites.batch);
+		this.stickmanV = new CharacterV(Project2.sprites.batch, "eye.png", "mouth.png");
+        stickmanV.sprites = Project2.sprites.loadSprites("stickman", "s");
 		stickmanV.createCharStates();
 
 		// ALT METHODS
@@ -142,21 +114,10 @@ public class VariableList {
         this.title = screens.new TitleScreen();
 		this.options = screens.new OptionsScreen();
 		this.char_select = screens.new CharSelectScreen();
-		this.game = screens.new GameInterface();
+		this.game = screens.new GameScreen();
 		this.pausing = screens.new PauseScreen();
 
-        this.hamFrames = loadSprites("hams", "s");
-		this.titleFrames = loadSprites("titleText/titleText", "s");
-
         // BUTTON
-		this.pause = new Button(pause_img, screen_size.x - 35, screen_size.y - 35);
+		this.pause = new Button(Project2.sprites.pause_img, screen_size.x - 35, screen_size.y - 35);
     }
-
-    // loads sprites into an array to use for animating
-	Array<Sprite> loadSprites(String atlas_name, String sprite_name) {
-		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(atlas_name + ".atlas"));
-		atlas.findRegions(sprite_name);
-		Array<Sprite> sprites = atlas.createSprites();
-		return sprites;
-	}
 }

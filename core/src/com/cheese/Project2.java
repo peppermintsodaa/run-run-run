@@ -192,14 +192,14 @@ public class Project2 extends ApplicationAdapter {
 	// animating title text
 	class TitleText extends Animated {
 		TitleText() {
-			super(Project2.var_list.batch);
+			super(Project2.sprites.batch);
 		}
 
 		void tick() {
 			counter = var_list.titleCounter;
 
 			pos.setPosition(640, 500);
-			frameList = var_list.titleFrames;
+			frameList = sprites.titleFrames;
 			delay = 8; 	// plays every 2/15th second
 
 			super.tick();
@@ -209,13 +209,13 @@ public class Project2 extends ApplicationAdapter {
 	// dancing hamster in WIP game screen
 	class Hamster extends Animated {
 		Hamster() {
-			super(Project2.var_list.batch);
+			super(Project2.sprites.batch);
 		}
 		void tick() {
 			counter = var_list.gameCounter;
 
 			pos.setPosition(640, 300);
-			frameList = var_list.hamFrames;
+			frameList = sprites.hamFrames;
 			scale = 2.5f;
 			delay = 3; 	// plays every 1/15th second
 
@@ -229,7 +229,7 @@ public class Project2 extends ApplicationAdapter {
 
 		Boo (int x, int y) {
 			Coord pos = new Coord(x, y);
-			pos.position(var_list.boo_img);
+			pos.position(sprites.boo_img);
 		}
 	}
 
@@ -260,11 +260,13 @@ public class Project2 extends ApplicationAdapter {
 	//-------------------- V A R I A B L E S --------------------//
 
 	public static VariableList var_list;
+	public static SpriteList sprites;
 
 	//-----------------------------------------------------------//
 	
 	@Override
 	public void create () {
+		sprites = new SpriteList();
 		var_list = new VariableList();
 
 		// ALT METHOD
@@ -290,7 +292,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 		if (!var_list.game.isAtScreen) var_list.gameCounter = 0;
 		
-		var_list.batch.begin();
+		sprites.batch.begin();
 		
 		// menuFont.draw(batch, "( " + mouse_pos.x/10 + ", " + mouse_pos.y/10 + ")" , 10, 30); 		// displays mouse position
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
@@ -302,16 +304,16 @@ public class Project2 extends ApplicationAdapter {
 
 			// draws balls
 			for (Ball ball: var_list.balls) {
-				ball.drawBalls(ball, trash_bin);
+				ball.draw(ball, trash_bin);
 			}
 		}
 		else var_list.balls.removeAll(var_list.balls);	// respawns balls when moved to title screen
 		
 		// menu screen drawing
-		var_list.screens.drawScreens();
+		var_list.screens.draw();
 
 		// boo appears
-		if (var_list.b.booAppeared) var_list.boo_img.draw(var_list.batch);
+		if (var_list.b.booAppeared) sprites.boo_img.draw(sprites.batch);
 
 		for (Effect e : var_list.effects) {
 			if (e.draw() == false) trash_bin.add(e);
@@ -321,22 +323,22 @@ public class Project2 extends ApplicationAdapter {
 		var_list.effects.removeAll(trash_bin);
 		trash_bin.clear();
 
-		var_list.batch.end();
+		sprites.batch.end();
 	}
 	
 	@Override
 	public void dispose () {
-		var_list.batch.dispose();
-		var_list.boo_img.getTexture().dispose();
-		var_list.ball_img.getTexture().dispose();
-		var_list.eye_img.getTexture().dispose();
-		var_list.grey_bg.getTexture().dispose();
-		var_list.pause_img.getTexture().dispose();
+		sprites.batch.dispose();
+		sprites.boo_img.getTexture().dispose();
+		sprites.ball_img.getTexture().dispose();
+		sprites.eye_img.getTexture().dispose();
+		sprites.grey_bg.getTexture().dispose();
+		sprites.pause_img.getTexture().dispose();
 		for (Ball b: var_list.balls) {
 			for (Sprite f: b.ball_splash_frames) f.getTexture().dispose();
 		}
-		for (Sprite f: var_list.titleFrames) f.getTexture().dispose();
-		for (Sprite f: var_list.hamFrames) f.getTexture().dispose();
+		for (Sprite f: sprites.titleFrames) f.getTexture().dispose();
+		for (Sprite f: sprites.hamFrames) f.getTexture().dispose();
 		for (Sprite s: var_list.stickmanV.sprites) s.getTexture().dispose();
 
 		var_list.boo.dispose();
