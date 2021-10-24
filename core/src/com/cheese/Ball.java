@@ -74,4 +74,13 @@ public class Ball {
             return super.draw();
         }
     }
+
+    void drawBalls(Ball ball, ArrayList<Object> trash) {
+        ball.pos.position(Project2.var_list.ball_img);
+        Project2.var_list.ball_img.draw(Project2.var_list.batch);
+
+        if (!ball.tick()) {
+            trash.add(ball);
+        }
+    }
 }

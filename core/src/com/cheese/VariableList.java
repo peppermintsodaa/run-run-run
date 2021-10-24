@@ -3,6 +3,7 @@ package com.cheese;
 import com.cheese.Project2.*;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 public class VariableList {
     Coord screen_size;
 	Coord mouse_pos = new Coord(0,0);
+
+	OrthographicCamera camera;
 
 	SpriteBatch batch;
 	Sprite ball_img;
@@ -65,12 +68,18 @@ public class VariableList {
 	ScreenModes.GameInterface game;
 	ScreenModes.PauseScreen pausing;
 
+	float currTime;
+	int gameCounter;
+	int titleCounter = 0;
+
 	static final Color GREEN = new Color(0, 1, 0, 1);
 	static final Color RED = new Color(1, 0, 0, 1);
 
     VariableList() {
         this.screen_size = new Coord(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		this.batch = new SpriteBatch();
+
+		this.camera = new OrthographicCamera();
 
 		// SPRITES        
         this.boo_img = new Sprite(new Texture(Gdx.files.internal("boo.png")));

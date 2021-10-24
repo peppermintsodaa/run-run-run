@@ -1,15 +1,8 @@
 package com.cheese;
 
 import com.badlogic.gdx.ApplicationAdapter;
-// import com.badlogic.gdx.graphics.Color;
-// import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-
-// import com.badlogic.gdx.graphics.g2d.BitmapFont;
-// import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-// import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator; // custom font generator package
-// import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -188,12 +181,11 @@ public class Project2 extends ApplicationAdapter {
 
 	// initiates ball object
 	void createBall() {
-		if ((titleCounter % 20) == 0) {
+		if ((Project2.var_list.titleCounter % 20) == 0) {
 			Ball b = new Ball();
-			var_list.balls.add(b);
+			Project2.var_list.balls.add(b);
 		}
 	}
-
 
 	//------------------------ M I S C ------------------------//
 	
@@ -204,7 +196,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 
 		void tick() {
-			counter = titleCounter;
+			counter = var_list.titleCounter;
 
 			pos.setPosition(640, 500);
 			frameList = var_list.titleFrames;
@@ -220,7 +212,7 @@ public class Project2 extends ApplicationAdapter {
 			super(Project2.var_list.batch);
 		}
 		void tick() {
-			counter = gameCounter;
+			counter = var_list.gameCounter;
 
 			pos.setPosition(640, 300);
 			frameList = var_list.hamFrames;
@@ -269,12 +261,6 @@ public class Project2 extends ApplicationAdapter {
 
 	public static VariableList var_list;
 
-	ArrayList<Sprite> ball_splash_frames;
-
-	float currTime;
-	int gameCounter;
-	int titleCounter = 0;
-
 	//-----------------------------------------------------------//
 	
 	@Override
@@ -300,9 +286,9 @@ public class Project2 extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
 		if (var_list.game.isAtScreen && !var_list.pausing.isAtScreen) {
-			gameCounter++;
+			var_list.gameCounter++;
 		}
-		if (!var_list.game.isAtScreen) gameCounter = 0;
+		if (!var_list.game.isAtScreen) var_list.gameCounter = 0;
 		
 		var_list.batch.begin();
 		
@@ -311,27 +297,18 @@ public class Project2 extends ApplicationAdapter {
 
 		// TITLE SCREEN / OPTIONS SCREEN
 		if ((var_list.title.isAtScreen || var_list.options.isAtScreen || var_list.char_select.isAtScreen) && !var_list.game.isAtScreen) {	
-			titleCounter++;
+			var_list.titleCounter++;
 			createBall();	// creates array of balls
 
 			// draws balls
 			for (Ball ball: var_list.balls) {
-				ball.pos.position(var_list.ball_img);
-				var_list.ball_img.draw(var_list.batch);
-	
-				if (!ball.tick()) {
-					trash_bin.add(ball);
-				}
+				ball.drawBalls(ball, trash_bin);
 			}
 		}
 		else var_list.balls.removeAll(var_list.balls);	// respawns balls when moved to title screen
 		
 		// menu screen drawing
-		var_list.title.draw();
-		var_list.char_select.draw();
-		var_list.game.draw();
-		var_list.pausing.draw();
-		var_list.options.draw();
+		var_list.screens.drawScreens();
 
 		// boo appears
 		if (var_list.b.booAppeared) var_list.boo_img.draw(var_list.batch);
@@ -355,7 +332,9 @@ public class Project2 extends ApplicationAdapter {
 		var_list.eye_img.getTexture().dispose();
 		var_list.grey_bg.getTexture().dispose();
 		var_list.pause_img.getTexture().dispose();
-		for (Sprite f: ball_splash_frames) f.getTexture().dispose();
+		for (Ball b: var_list.balls) {
+			for (Sprite f: b.ball_splash_frames) f.getTexture().dispose();
+		}
 		for (Sprite f: var_list.titleFrames) f.getTexture().dispose();
 		for (Sprite f: var_list.hamFrames) f.getTexture().dispose();
 		for (Sprite s: var_list.stickmanV.sprites) s.getTexture().dispose();

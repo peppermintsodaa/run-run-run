@@ -55,7 +55,8 @@ public class ScreenModes {
                 Project2.var_list.titleFont.draw(Project2.var_list.batch, "SELECT CHARACTER", 250, 600);
 				Project2.var_list.menuFont.draw(Project2.var_list.batch, "GO BACK", 570, 100);
 
-				Project2.drawInCharSelect(640, 320, Project2.var_list.stickmanV, Project2.var_list.stickmanV.sprites, Project2.var_list.stickmanV.states);
+				Project2.drawInCharSelect(640, 320, Project2.var_list.stickmanV, 
+													Project2.var_list.stickmanV.sprites, Project2.var_list.stickmanV.states);
         	}
 		}
     }
@@ -106,4 +107,12 @@ public class ScreenModes {
 			}
 		}
     }
+
+	void drawScreens() {
+		Project2.var_list.title.draw();
+		Project2.var_list.char_select.draw();
+		Project2.var_list.game.draw();
+		Project2.var_list.pausing.draw();
+		Project2.var_list.options.draw();
+	}
 }
