@@ -82,14 +82,16 @@ public class ScreenModes {
 				MainGame.var_list.run90s.duration = 726f;
 
                 MainGame.var_list.titleFont.draw(batch, "W.I.P", 340, 600);
-				MainGame.var_list.hamster.tick();
 				MainGame.var_list.run90s.tick();
-				MainGame.var_list.pause.draw();
 
 				game.tick();
+
+				MainGame.var_list.hamster.tick();
+				MainGame.var_list.pause.draw();
 			}
 			else {
 				game.platform.reset();
+				game.background.reset();
 
 				MainGame.var_list.run90s.soundCounter = 0;
 				MainGame.var_list.run90s.music.stop();

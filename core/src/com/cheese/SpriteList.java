@@ -21,6 +21,7 @@ public class SpriteList {
 	Sprite mouth_img;
 
     Sprite platform_img;
+	Sprite game_bg_img;
 
     Array<Sprite> titleFrames;
 	Array<Sprite> hamFrames;
@@ -42,6 +43,7 @@ public class SpriteList {
 		this.grey_bg = new Sprite(new Texture(Gdx.files.internal("grey.png")), 1, 1);
 
         this.platform_img = new Sprite(new Texture(Gdx.files.internal("platform.png")));
+		this.game_bg_img = new Sprite(new Texture(Gdx.files.internal("bg_test.png")));
 
         this.hamFrames = loadSprites("hams", "s");
 		this.titleFrames = loadSprites("titleText/titleText", "s");
