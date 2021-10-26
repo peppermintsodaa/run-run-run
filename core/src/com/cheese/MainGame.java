@@ -18,7 +18,7 @@ import java.util.HashMap;
 - rewriting input processor to incorporate some sort of bound for text options 
 */
 
-public class Project2 extends ApplicationAdapter {
+public class MainGame extends ApplicationAdapter {
 
 	public class InputProcessor extends InputAdapter
 	{
@@ -151,39 +151,39 @@ public class Project2 extends ApplicationAdapter {
 
 		character.eye_l.pos.setPosition(character.pos.x - 15, character.pos.y + 120);
 		character.eye_r.pos.setPosition(character.pos.x + 25, character.pos.y + 120);
-		character.mouth.pos.setPosition(character.pos.x + 5, character.pos.y + 90);
+		// character.mouth.pos.setPosition(character.pos.x + 5, character.pos.y + 90);
 
 		if (var_list.mouse_pos.x >= character.pos.x && var_list.mouse_pos.x <= character.pos.x + 200 && 
 			var_list.mouse_pos.y >= 150 && var_list.mouse_pos.y <= 500) {
 			character.setState("standing", sprites, states.get("stand/looking right"));
 
 			character.eye_r.pos.setPosition(character.pos.x + 15, character.pos.y + 120);
-			character.eye_r.draw();
-			character.mouth.draw();
+			character.eye_r.draw(250, 50);
+			// character.mouth.draw();
 		}
 		if (var_list.mouse_pos.x < character.pos.x && var_list.mouse_pos.x >= character.pos.x - 200 &&
 			var_list.mouse_pos.y >= 150 && var_list.mouse_pos.y <= 500) {
 			character.setState("standing", sprites, states.get("stand/looking left"));
 			
-			character.eye_l.draw();
-			character.mouth.pos.setPosition(character.pos.x, character.pos.y + 90);
-			character.mouth.draw();
+			character.eye_l.draw(250, 50);
+			// character.mouth.pos.setPosition(character.pos.x, character.pos.y + 90);
+			// character.mouth.draw();
 		}
 		if (var_list.mouse_pos.x > character.pos.x + 200 || var_list.mouse_pos.x < character.pos.x - 200 || 
 			var_list.mouse_pos.y < 150 || var_list.mouse_pos.y > 500) {
 			character.setState("standing", sprites, states.get("stand/looking front"));
 
-			character.eye_l.draw();
-			character.eye_r.draw();
-			character.mouth.draw();
+			character.eye_l.draw(250, 50);
+			character.eye_r.draw(250, 50);
+			// character.mouth.draw();
 		}
 	}
 
 	// initiates ball object
 	void createBall() {
-		if ((Project2.var_list.titleCounter % 20) == 0) {
+		if ((var_list.titleCounter % 20) == 0) {
 			Ball b = new Ball();
-			Project2.var_list.balls.add(b);
+			var_list.balls.add(b);
 		}
 	}
 
@@ -192,7 +192,7 @@ public class Project2 extends ApplicationAdapter {
 	// animating title text
 	class TitleText extends Animated {
 		TitleText() {
-			super(Project2.sprites.batch);
+			super(sprites.batch);
 		}
 
 		void tick() {
@@ -209,7 +209,7 @@ public class Project2 extends ApplicationAdapter {
 	// dancing hamster in WIP game screen
 	class Hamster extends Animated {
 		Hamster() {
-			super(Project2.sprites.batch);
+			super(sprites.batch);
 		}
 		void tick() {
 			counter = var_list.gameCounter;
