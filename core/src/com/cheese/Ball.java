@@ -18,7 +18,7 @@ public class Ball {
         pos = pos.plus(vel);
         vel = vel.plus(accel);
 
-        if (Project2.var_list.title.isAtScreen && pos.x > 560 && pos.x < 750 && pos.y < 267) {
+        if (Project2.screens.title.isAtScreen && pos.x > 560 && pos.x < 750 && pos.y < 267) {
             playSplash(pos.x, 267);
             return false;
         }

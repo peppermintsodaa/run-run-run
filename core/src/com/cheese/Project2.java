@@ -26,7 +26,7 @@ public class Project2 extends ApplicationAdapter {
 		{ 
 			var_list.mouse_pos = new Coord(screenX, var_list.screen_size.y - screenY);
 
-			if (var_list.title.isAtScreen) {
+			if (screens.title.isAtScreen) {
 				// clicking on NEW GAME
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
 					var_list.b.booAppeared = true;
@@ -36,8 +36,8 @@ public class Project2 extends ApplicationAdapter {
 				// clicking on OPTIONS
 				if (screenX >= 590 && screenX <= 720 && screenY >= 500 && screenY <= 550)  {
 					playSound(var_list.click);
-					var_list.title.close();
-					var_list.options.open();
+					screens.title.close();
+					screens.options.open();
 					return false;
 				}
 				// clicking on EXIT
@@ -47,29 +47,29 @@ public class Project2 extends ApplicationAdapter {
 					return false;
 				}
 			}
-			if (var_list.options.isAtScreen) {
+			if (screens.options.isAtScreen) {
 				// configuring sound
 				if (screenX >= 795 && screenX <= 840 && screenY >= 320 && screenY <= 355)  {
-					var_list.options.soundSwitch();
+					screens.options.soundSwitch();
 					playSound(var_list.click);
 					return false;
 				}
 				// clicking on GO BACK
 				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 655)  {
 					playSound(var_list.click);
-					var_list.options.close();
-					if (!var_list.game.isAtScreen) {
-						var_list.title.open();
+					screens.options.close();
+					if (!screens.game.isAtScreen) {
+						screens.title.open();
 					}
 					return false;
 				}
 			}
-			if (var_list.char_select.isAtScreen) {
+			if (screens.char_select.isAtScreen) {
 				// clicking on GO BACK
 				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 655)  {
 					playSound(var_list.click);
-					var_list.char_select.close();
-					var_list.title.open();
+					screens.char_select.close();
+					screens.title.open();
 					return false;
 				}
 				// clicking on CHARACTER
@@ -79,33 +79,33 @@ public class Project2 extends ApplicationAdapter {
 					return false;
 				}
 			}
-			if (var_list.game.isAtScreen) {
+			if (screens.game.isAtScreen) {
 				// clicking on pause button
 				if (var_list.mouse_pos.minus(var_list.pause.pos).radius() < 25) {
-					if (!var_list.pausing.isAtScreen) {
+					if (!screens.pausing.isAtScreen) {
 						playSound(var_list.click);
-						var_list.pausing.open();
+						screens.pausing.open();
 					}
 					return false;
 				}
 			}
-			if (var_list.pausing.isAtScreen) {
+			if (screens.pausing.isAtScreen) {
 				// clicking on OPTIONS
 				if (screenX >= 250 && screenX <= 360 && screenY >= 570 && screenY <= 605) {
-					var_list.options.open();
+					screens.options.open();
 					playSound(var_list.click);
 				}
 				// clicking on RESUME
 				if (screenX >= 570 && screenX <= 700 && screenY >= 570 && screenY <= 605) {
-					var_list.pausing.close();
+					screens.pausing.close();
 					playSound(var_list.click);
 				}
 				// clicking on GIVE UP
 				if (screenX >= 895 && screenX <= 1000 && screenY >= 570 && screenY <= 605) {
-					var_list.pausing.close();
-					var_list.game.close();
+					screens.pausing.close();
+					screens.game.close();
 					playSound(var_list.click);
-					var_list.title.open();
+					screens.title.open();
 				}
 			}
 			return true;
@@ -115,22 +115,22 @@ public class Project2 extends ApplicationAdapter {
 		{ 
 			var_list.mouse_pos = new Coord(screenX, var_list.screen_size.y - screenY);
 
-			if (var_list.title.isAtScreen) {
+			if (screens.title.isAtScreen) {
 				// clicking on NEW GAME
 				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
 					var_list.b.booAppeared = false;
 					playSound(var_list.click);
-					var_list.title.close();
-					var_list.char_select.open();
+					screens.title.close();
+					screens.char_select.open();
 					return false;
 				}
 			}
-			if (var_list.char_select.isAtScreen) {
+			if (screens.char_select.isAtScreen) {
 				// clicking on CHARACTER
 				if ((Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.pos).x) < (var_list.stickmanV.dims.x / 2) + 15) && 
 					(Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.pos).y) < (var_list.stickmanV.dims.y / 2) + 30)) {
-					var_list.char_select.close();
-					var_list.game.open();
+					screens.char_select.close();
+					screens.game.open();
 					return false;
 				}
 			}
@@ -155,7 +155,7 @@ public class Project2 extends ApplicationAdapter {
 
 		if (var_list.mouse_pos.x >= character.pos.x && var_list.mouse_pos.x <= character.pos.x + 200 && 
 			var_list.mouse_pos.y >= 150 && var_list.mouse_pos.y <= 500) {
-			character.setState(sprites, states.get("stand/looking right"));
+			character.setState("standing", sprites, states.get("stand/looking right"));
 
 			character.eye_r.pos.setPosition(character.pos.x + 15, character.pos.y + 120);
 			character.eye_r.draw();
@@ -163,7 +163,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 		if (var_list.mouse_pos.x < character.pos.x && var_list.mouse_pos.x >= character.pos.x - 200 &&
 			var_list.mouse_pos.y >= 150 && var_list.mouse_pos.y <= 500) {
-			character.setState(sprites, states.get("stand/looking left"));
+			character.setState("standing", sprites, states.get("stand/looking left"));
 			
 			character.eye_l.draw();
 			character.mouth.pos.setPosition(character.pos.x, character.pos.y + 90);
@@ -171,7 +171,7 @@ public class Project2 extends ApplicationAdapter {
 		}
 		if (var_list.mouse_pos.x > character.pos.x + 200 || var_list.mouse_pos.x < character.pos.x - 200 || 
 			var_list.mouse_pos.y < 150 || var_list.mouse_pos.y > 500) {
-			character.setState(sprites, states.get("stand/looking front"));
+			character.setState("standing", sprites, states.get("stand/looking front"));
 
 			character.eye_l.draw();
 			character.eye_r.draw();
@@ -235,7 +235,7 @@ public class Project2 extends ApplicationAdapter {
 
 	// plays any sound if sound is on
 	void playSound(Sound s) {
-		if (!var_list.options.soundOff) {
+		if (!screens.options.soundOff) {
 			s.play(); 
 		}
 	}
@@ -261,6 +261,7 @@ public class Project2 extends ApplicationAdapter {
 
 	public static VariableList var_list;
 	public static SpriteList sprites;
+	public static ScreensList screens;
 
 	//-----------------------------------------------------------//
 	
@@ -268,6 +269,7 @@ public class Project2 extends ApplicationAdapter {
 	public void create () {
 		sprites = new SpriteList();
 		var_list = new VariableList();
+		screens = new ScreensList();
 
 		// ALT METHOD
 		// titleFrames = split(new Texture("titleText/run_run.png"), titleFrames, 5, 1);
@@ -287,10 +289,10 @@ public class Project2 extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
-		if (var_list.game.isAtScreen && !var_list.pausing.isAtScreen) {
+		if (screens.game.isAtScreen && !screens.pausing.isAtScreen) {
 			var_list.gameCounter++;
 		}
-		if (!var_list.game.isAtScreen) var_list.gameCounter = 0;
+		if (!screens.game.isAtScreen) var_list.gameCounter = 0;
 		
 		sprites.batch.begin();
 		
@@ -298,7 +300,7 @@ public class Project2 extends ApplicationAdapter {
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
 		// TITLE SCREEN / OPTIONS SCREEN
-		if ((var_list.title.isAtScreen || var_list.options.isAtScreen || var_list.char_select.isAtScreen) && !var_list.game.isAtScreen) {	
+		if ((screens.title.isAtScreen || screens.options.isAtScreen || screens.char_select.isAtScreen) && !screens.game.isAtScreen) {	
 			var_list.titleCounter++;
 			createBall();	// creates array of balls
 
@@ -310,7 +312,7 @@ public class Project2 extends ApplicationAdapter {
 		else var_list.balls.removeAll(var_list.balls);	// respawns balls when moved to title screen
 		
 		// menu screen drawing
-		var_list.screens.draw();
+		screens.screens.draw();
 
 		// boo appears
 		if (var_list.b.booAppeared) sprites.boo_img.draw(sprites.batch);
@@ -334,12 +336,9 @@ public class Project2 extends ApplicationAdapter {
 		sprites.eye_img.getTexture().dispose();
 		sprites.grey_bg.getTexture().dispose();
 		sprites.pause_img.getTexture().dispose();
-		for (Ball b: var_list.balls) {
-			for (Sprite f: b.ball_splash_frames) f.getTexture().dispose();
-		}
 		for (Sprite f: sprites.titleFrames) f.getTexture().dispose();
 		for (Sprite f: sprites.hamFrames) f.getTexture().dispose();
-		for (Sprite s: var_list.stickmanV.sprites) s.getTexture().dispose();
+		for (Sprite s: var_list.stickmanV.standing_sprites) s.getTexture().dispose();
 
 		var_list.boo.dispose();
 		var_list.click.dispose();

@@ -45,13 +45,6 @@ public class VariableList {
 	BitmapFont offOption;
 	BitmapFont onOption;
 
-    ScreenModes screens;
-    ScreenModes.TitleScreen title;
-	ScreenModes.OptionsScreen options;
-	ScreenModes.CharSelectScreen char_select;
-	ScreenModes.GameScreen game;
-	ScreenModes.PauseScreen pausing;
-
 	float currTime;
 	int gameCounter;
 	int titleCounter = 0;
@@ -71,8 +64,8 @@ public class VariableList {
         // ANIMATED SPRITES
 		this.stickman = new Character(Project2.sprites.batch);
 		this.stickmanV = new CharacterV(Project2.sprites.batch, "eye.png", "mouth.png");
-        stickmanV.sprites = Project2.sprites.loadSprites("stickman", "s");
-		stickmanV.createCharStates();
+        stickmanV.standing_sprites = Project2.sprites.loadSprites("stickman", "s");
+		stickmanV.createCharStates("standing");
 
 		// ALT METHODS
 		// stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);
@@ -109,13 +102,6 @@ public class VariableList {
 		this.titleFont = generator2.generateFont(parTitle);
 		this.offOption = generator1.generateFont(parOptionRed);
 		this.onOption = generator1.generateFont(parOptionGreen);
-
-        this.screens = new ScreenModes();
-        this.title = screens.new TitleScreen();
-		this.options = screens.new OptionsScreen();
-		this.char_select = screens.new CharSelectScreen();
-		this.game = screens.new GameScreen();
-		this.pausing = screens.new PauseScreen();
 
         // BUTTON
 		this.pause = new Button(Project2.sprites.pause_img, screen_size.x - 35, screen_size.y - 35);

@@ -13,8 +13,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class CharacterV {
     SpriteBatch batch;
-    Array<Sprite> sprites;
-    HashMap<String, Integer> states = new HashMap<>();
+
+    Array<Sprite> standing_sprites;
+    Array<Sprite> running_sprites;
+
+    HashMap<String, Integer> standing_states = new HashMap<>();
+    HashMap<String, Integer> running_states = new HashMap<>();
 
     Coord mouse_pos;
 
@@ -30,10 +34,15 @@ public class CharacterV {
     }
 
     // list of character states
-	void createCharStates() {
-		states.put("stand/looking front", 0);
-		states.put("stand/looking left", 1);
-		states.put("stand/looking right", 2);
+	void createCharStates(String type) {
+        if (type.equals("standing")) {
+            standing_states.put("stand/looking front", 0);
+            standing_states.put("stand/looking left", 1);
+            standing_states.put("stand/looking right", 2);
+        }
+        if (type.equals("running")) {
+            running_states.put("run1", 0);
+        }
 	}
 
     Coord pos = new Coord(0,0);
@@ -49,14 +58,16 @@ public class CharacterV {
     }
 
     // sets state of character based on index corresponding to hash map
-    void setState(Array<Sprite> sprite_list, int state) {
-        switch (state) {
-            case 1: draw(sprite_list, 1);
-                    break;
-            case 2: draw(sprite_list, 2);
-                    break;
-            default:draw(sprite_list, 0);
-                    break;
+    void setState(String type, Array<Sprite> sprite_list, int state) {
+        if (type.equals("standing")) {
+            switch (state) {
+                case 1: draw(sprite_list, 1);
+                        break;
+                case 2: draw(sprite_list, 2);
+                        break;
+                default:draw(sprite_list, 0);
+                        break;
+            }
         }
     }
 

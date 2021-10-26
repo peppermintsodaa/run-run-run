@@ -14,13 +14,13 @@ public class BGM {
     }
 
     void tick() {
-        if (Project2.var_list.game.isAtScreen) {
+        if (Project2.screens.game.isAtScreen) {
             int length = (int)(soundCounter % duration);
 
-            if (!Project2.var_list.pausing.isAtScreen && !Project2.var_list.options.soundOff) 
+            if (!Project2.screens.pausing.isAtScreen && !Project2.screens.options.soundOff) 
                 soundCounter++;
                 if (length == 0) music.play();
-            if (Project2.var_list.pausing.isAtScreen || Project2.var_list.options.soundOff) {
+            if (Project2.screens.pausing.isAtScreen || Project2.screens.options.soundOff) {
                 music.pause();
             }
             else music.resume();
