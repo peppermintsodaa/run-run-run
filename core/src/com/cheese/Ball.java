@@ -9,8 +9,8 @@ import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 
 public class Ball {
-    Coord pos = new Coord((int)(Math.random()*(Project2.var_list.screen_size.x+1)), 
-                                               Project2.var_list.screen_size.y+30);		// determines ball's location at top of screen
+    Coord pos = new Coord((int)(Math.random()*(MainGame.var_list.screen_size.x+1)), 
+                                               MainGame.var_list.screen_size.y+30);		// determines ball's location at top of screen
     Coord vel = new Coord(0,(int)(Math.random()*(5-2+1)+2));				            // determines ball's random velocity 
     Coord accel = new Coord(0, -0.5f);
 
@@ -18,7 +18,7 @@ public class Ball {
         pos = pos.plus(vel);
         vel = vel.plus(accel);
 
-        if (Project2.screens.title.isAtScreen && pos.x > 560 && pos.x < 750 && pos.y < 267) {
+        if (MainGame.screens.title.isAtScreen && pos.x > 560 && pos.x < 750 && pos.y < 267) {
             playSplash(pos.x, 267);
             return false;
         }
@@ -31,11 +31,11 @@ public class Ball {
     }
 
     void playSplash(float x, float y) {
-        BallSplash splash = new BallSplash(Project2.sprites.batch);
+        BallSplash splash = new BallSplash(MainGame.sprites.batch);
         splash.duration = 9;
         splash.scale_min = splash.scale_max = .5f;
         splash.pos = new Coord(x, y);
-        Project2.var_list.effects.add(splash);
+        MainGame.var_list.effects.add(splash);
     }
 
     ArrayList<Sprite> ball_splash_frames;
@@ -76,8 +76,8 @@ public class Ball {
     }
 
     void draw(Ball ball, ArrayList<Object> trash) {
-        ball.pos.position(Project2.sprites.ball_img);
-        Project2.sprites.ball_img.draw(Project2.sprites.batch);
+        ball.pos.position(MainGame.sprites.ball_img);
+        MainGame.sprites.ball_img.draw(MainGame.sprites.batch);
 
         if (!ball.tick()) {
             trash.add(ball);

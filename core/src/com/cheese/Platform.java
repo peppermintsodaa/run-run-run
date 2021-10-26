@@ -7,8 +7,8 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 
 public class Platform {
-    Sprite img = Project2.sprites.platform_img;
-    Coord screen_size = Project2.var_list.screen_size;
+    Sprite img = MainGame.sprites.platform_img;
+    Coord screen_size = MainGame.var_list.screen_size;
     Array<Sprite> platforms = new Array<Sprite>();
 
     double speed;
@@ -52,10 +52,10 @@ public class Platform {
     }
 
     void draw() {
-        if (Project2.screens.game.isAtScreen) {
+        if (MainGame.screens.game.isAtScreen) {
             vel.x = (float)speed;
 
-            if (Project2.screens.pausing.isAtScreen) {
+            if (MainGame.screens.pausing.isAtScreen) {
                 vel.x = 0;
                 first_pos = first_pos.minus(vel);
             }
@@ -68,7 +68,7 @@ public class Platform {
                 cur_pos = pos.get(i);
                 cur_pos = cur_pos.minus(vel);
                 cur_pos.position(platforms.get(i));
-                platforms.get(i).draw(Project2.sprites.batch);
+                platforms.get(i).draw(MainGame.sprites.batch);
 
                 pos.set(i, cur_pos);
 

@@ -16,6 +16,6 @@ public class Button {
     void draw () {
         pos.position(img);
         img.setScale(scale);
-        img.draw(Project2.sprites.batch);
+        img.draw(MainGame.sprites.batch);
     }
 }

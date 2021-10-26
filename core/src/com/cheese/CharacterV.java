@@ -28,9 +28,9 @@ public class CharacterV {
 
     CharacterV (SpriteBatch batch, String eye_img, String mouth_img) {
         this.batch = batch;
-        eye_l = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))));
-		eye_r = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))));
-		mouth = new BodyPart(new Sprite(new Texture(Gdx.files.internal(mouth_img))));
+        eye_l = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))), true);
+		eye_r = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))), true);
+		// mouth = new BodyPart(new Sprite(new Texture(Gdx.files.internal(mouth_img))), false);
     }
 
     // list of character states
@@ -87,11 +87,23 @@ public class CharacterV {
 		float scale = 0.25f;
 		Sprite img;
 
-		BodyPart (Sprite img) {
+        boolean isEye;
+
+		BodyPart (Sprite img, boolean isEye) {
 			this.img = img;
+            this.isEye = isEye;
 		}
 
-		boolean draw () {
+		boolean draw (float open, float blink) {
+            float open_t = open; 
+            float blink_t = blink;
+
+            if (isEye) {
+                if ((MainGame.var_list.titleCounter % open_t >= 0) && (MainGame.var_list.titleCounter % open_t < blink_t)) {
+                    return false;
+                }
+            }
+
 			pos.position(img);
 			img.setScale(scale);
 			img.draw(batch);

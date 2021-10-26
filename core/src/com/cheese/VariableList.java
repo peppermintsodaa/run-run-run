@@ -1,6 +1,6 @@
 package com.cheese;
 
-import com.cheese.Project2.*;
+import com.cheese.MainGame.*;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -58,13 +58,13 @@ public class VariableList {
 		this.camera = new OrthographicCamera();
 
 		// MODIFYING SPRITES
-		Project2.sprites.grey_bg.setSize(screen_size.x, screen_size.y);
-		Project2.sprites.grey_bg.setColor(0,0,0,0.3f);
+		MainGame.sprites.grey_bg.setSize(screen_size.x, screen_size.y);
+		MainGame.sprites.grey_bg.setColor(0,0,0,0.3f);
 
         // ANIMATED SPRITES
-		this.stickman = new Character(Project2.sprites.batch);
-		this.stickmanV = new CharacterV(Project2.sprites.batch, "eye.png", "mouth.png");
-        stickmanV.standing_sprites = Project2.sprites.loadSprites("stickman", "s");
+		this.stickman = new Character(MainGame.sprites.batch);
+		this.stickmanV = new CharacterV(MainGame.sprites.batch, "eye.png", "mouth.png");
+        stickmanV.standing_sprites = MainGame.sprites.loadSprites("stickman", "s");
 		stickmanV.createCharStates("standing");
 
 		// ALT METHODS
@@ -104,6 +104,6 @@ public class VariableList {
 		this.onOption = generator1.generateFont(parOptionGreen);
 
         // BUTTON
-		this.pause = new Button(Project2.sprites.pause_img, screen_size.x - 35, screen_size.y - 35);
+		this.pause = new Button(MainGame.sprites.pause_img, screen_size.x - 35, screen_size.y - 35);
     }
 }
