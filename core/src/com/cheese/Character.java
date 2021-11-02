@@ -34,15 +34,7 @@ public class Character {
         }
     }
 
-    // void jumpOneTime(double vel) {
-    //     charV.run_pos.y = (float)(charV.run_pos.y + vel);
-    //     vel += jump_accel;
-    //     // jump_count++;
-    // }
-
-    void jump() {        
-        // double increment;
-
+    void jump() {
         if (hasJumped) {
             // max_height = MainGame.screens.game.game.platform.cur_pos.y + 200;
             

@@ -33,17 +33,13 @@ public class ScreenModes {
                 MainGame.var_list.titleFont.draw(batch, "OPTIONS", 475, 600);
                 MainGame.var_list.menuFont.draw(batch, "SOUND", 400, 400);
 				MainGame.var_list.menuFont.draw(batch, "GO BACK", 570, 100);
-				if (soundOff) {
-					MainGame.var_list.offOption.draw(batch, "OFF", 800, 390);
-				}
+				if (soundOff) MainGame.var_list.offOption.draw(batch, "OFF", 800, 390);
 				else MainGame.var_list.onOption.draw(batch, "ON", 800, 390);
             }
         }
 
 		public void soundSwitch() {
-			if (!soundOff) {
-				soundOff = true;
-			}
+			if (!soundOff) soundOff = true;
 			else soundOff = false;
 		}
     }

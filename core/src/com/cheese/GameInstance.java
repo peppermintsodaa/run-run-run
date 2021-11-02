@@ -1,7 +1,5 @@
 package com.cheese;
 
-
-
 public class GameInstance {
     Platform platform;
     Background background;

@@ -26,15 +26,12 @@ public class MainGame extends ApplicationAdapter {
 		public boolean keyDown (int keycode) {
 			if (!screens.pausing.isAtScreen) {
 				if (keycode == Keys.SPACE) {
-					if (screens.game.game.character.hasJumped) {
+					if (screens.game.game.character.hasJumped) 
 						screens.game.game.character.hasDoubleJumped = true;
-					}
 					screens.game.game.character.hasJumped = true;
 				}
 			}
-			else if (keycode == Keys.ENTER) {
-				screens.pausing.close();
-			}
+			else if (keycode == Keys.ENTER) screens.pausing.close();
 			return false;
 		}
 
@@ -360,6 +357,7 @@ public class MainGame extends ApplicationAdapter {
 		for (Sprite f: sprites.titleFrames) f.getTexture().dispose();
 		for (Sprite f: sprites.hamFrames) f.getTexture().dispose();
 		for (Sprite s: var_list.stickmanV.standing_sprites) s.getTexture().dispose();
+		for (Sprite s: var_list.stickmanV.running_sprites) s.getTexture().dispose();
 
 		var_list.boo.dispose();
 		var_list.click.dispose();
