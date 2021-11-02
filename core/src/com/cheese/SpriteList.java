@@ -45,14 +45,13 @@ public class SpriteList {
         this.platform_img = new Sprite(new Texture(Gdx.files.internal("platform.png")));
 		this.game_bg_img = new Sprite(new Texture(Gdx.files.internal("bg_test.png")));
 
-        this.hamFrames = loadSprites("hams", "s");
-		this.titleFrames = loadSprites("titleText/titleText", "s");
+        this.hamFrames = loadAnimatedSprites("hams");
+		this.titleFrames = loadAnimatedSprites("titleText/titleText");
     }
 
     // loads sprites into an array to use for animating
-	Array<Sprite> loadSprites(String atlas_name, String sprite_name) {
+	Array<Sprite> loadAnimatedSprites(String atlas_name) {
 		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(atlas_name + ".atlas"));
-		atlas.findRegions(sprite_name);
 		Array<Sprite> sprites = atlas.createSprites();
 		return sprites;
 	}

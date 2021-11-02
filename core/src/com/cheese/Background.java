@@ -1,10 +1,12 @@
 package com.cheese;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public class Background extends Scrollable {
-    Background(float speed, float x, float y) {
+    Background(Sprite img, float speed, float x, float y) {
         super(speed, x, y);
 
-        this.img = MainGame.sprites.game_bg_img;
+        this.img = img;
         this.scale = 0.7111f;
 
         create();

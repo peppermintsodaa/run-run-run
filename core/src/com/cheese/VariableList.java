@@ -12,6 +12,8 @@ import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.audio.Sound;
 
+import com.badlogic.gdx.Input.Keys;
+
 import java.util.ArrayList;
 
 public class VariableList {
@@ -51,6 +53,7 @@ public class VariableList {
 
 	static final Color GREEN = new Color(0, 1, 0, 1);
 	static final Color RED = new Color(1, 0, 0, 1);
+	static final int SPACE = Keys.SPACE;;
 
     VariableList() {
         this.screen_size = new Coord(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -62,10 +65,10 @@ public class VariableList {
 		MainGame.sprites.grey_bg.setColor(0,0,0,0.3f);
 
         // ANIMATED SPRITES
-		this.stickman = new Character(MainGame.sprites.batch);
-		this.stickmanV = new CharacterV(MainGame.sprites.batch, "eye.png", "mouth.png");
-        stickmanV.standing_sprites = MainGame.sprites.loadSprites("stickman", "s");
-		stickmanV.createCharStates("standing");
+		this.stickmanV = new CharacterV(MainGame.sprites.batch, "stickman", "running");
+		this.stickman = new Character(MainGame.sprites.batch, stickmanV);
+        // stickmanV.standing_sprites = MainGame.sprites.loadAnimatedSprites("stickman");
+		// stickmanV.createCharStates("standing");
 
 		// ALT METHODS
 		// stickman_sprites = split(new Texture("stickman.png"), stickman_sprites, 1, 3);

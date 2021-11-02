@@ -67,6 +67,7 @@ public class Scrollable {
             img.setScale(scale);
             int i = 0;
 
+            // scroll items
             while (i < pos.size()) {
                 cur_pos = pos.get(i);
                 cur_pos = cur_pos.minus(vel);
@@ -79,7 +80,7 @@ public class Scrollable {
                 if (i == pos.size() - 1 && pos.get(i).x <= (screen_size.x -(img.getWidth()*scale / 2))
                                         && pos.size() < 2*getSpriteSize() + 1) {
                     sprites.add(img);
-                    pos.add(pos.get(pos.size()-1).plus(new Coord(img.getWidth()*scale, 0)));
+                    pos.add(pos.get(i).plus(new Coord(img.getWidth()*scale, 0)));
                 }
 
                 // remove off-screen platform unit
@@ -93,7 +94,7 @@ public class Scrollable {
         }
     }
 
-    // resets placement of platforms after playing game
+    // resets placement of scrollable items after playing game
     void reset() {
         pos.removeAll(pos);
         pos.addAll(orig_pos);

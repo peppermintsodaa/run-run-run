@@ -21,7 +21,7 @@ public class ScreenModes {
     }
 
 	public class OptionsScreen extends ScreenMode {
-		boolean soundOff = false;
+		boolean soundOff = true;
         
 		OptionsScreen() {
 			super();
@@ -66,39 +66,6 @@ public class ScreenModes {
 		}
     }
 
-	public class GameScreen extends ScreenMode {
-		GameInstance game;
-
-		GameScreen() {
-			super();
-			this.isAtScreen = false;
-			game = new GameInstance();
-			game.setScene();
-		}
-
-        public void draw () {
-            if (this.isAtScreen) {
-				MainGame.var_list.pause.scale = 0.5f;
-				MainGame.var_list.run90s.duration = 726f;
-
-                MainGame.var_list.titleFont.draw(batch, "W.I.P", 340, 600);
-				MainGame.var_list.run90s.tick();
-
-				game.tick();
-
-				MainGame.var_list.hamster.tick();
-				MainGame.var_list.pause.draw();
-			}
-			else {
-				game.platform.reset();
-				game.background.reset();
-
-				MainGame.var_list.run90s.soundCounter = 0;
-				MainGame.var_list.run90s.music.stop();
-			}
-		}
-    }
-
 	public class PauseScreen extends ScreenMode {
         PauseScreen () {
 			super();
@@ -119,6 +86,38 @@ public class ScreenModes {
 					MainGame.var_list.menuFont.draw(batch, "RESUME", 575, 150);
 					MainGame.var_list.menuFont.draw(batch, "GIVE UP", 900, 150);
 				}
+			}
+		}
+    }
+
+	public class GameScreen extends ScreenMode {
+		GameInstance game;
+
+		GameScreen() {
+			super();
+			this.isAtScreen = false;
+			game = new GameInstance();
+			game.setScene();
+		}
+
+        public void draw () {
+            if (this.isAtScreen) {
+				MainGame.var_list.pause.scale = 0.5f;
+				MainGame.var_list.run90s.duration = 726f;
+
+                MainGame.var_list.titleFont.draw(batch, "W.I.P", 340, 600);
+				MainGame.var_list.run90s.tick();
+
+				game.tick();
+
+				// MainGame.var_list.hamster.tick();
+				MainGame.var_list.pause.draw();
+			}
+			else {
+				game.reset();
+
+				MainGame.var_list.run90s.soundCounter = 0;
+				MainGame.var_list.run90s.music.stop();
 			}
 		}
     }

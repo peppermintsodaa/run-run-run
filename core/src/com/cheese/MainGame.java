@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 
 import java.util.ArrayList;
@@ -22,6 +23,21 @@ public class MainGame extends ApplicationAdapter {
 
 	public class InputProcessor extends InputAdapter
 	{
+		public boolean keyDown (int keycode) {
+			if (!screens.pausing.isAtScreen) {
+				if (keycode == Keys.SPACE) {
+					if (screens.game.game.character.hasJumped) {
+						screens.game.game.character.hasDoubleJumped = true;
+					}
+					screens.game.game.character.hasJumped = true;
+				}
+			}
+			else if (keycode == Keys.ENTER) {
+				screens.pausing.close();
+			}
+			return false;
+		}
+
 		public boolean touchDown (int screenX, int screenY, int pointer, int button)
 		{ 
 			var_list.mouse_pos = new Coord(screenX, var_list.screen_size.y - screenY);
@@ -73,8 +89,10 @@ public class MainGame extends ApplicationAdapter {
 					return false;
 				}
 				// clicking on CHARACTER
-				if ((Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.pos).x) < (var_list.stickmanV.dims.x / 2) + 15) && 
-					(Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.pos).y) < (var_list.stickmanV.dims.y / 2) + 30)) {
+				if ((Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.stand_pos).x) 
+													< (var_list.stickmanV.stand_dims.x / 2) + 15) && 
+					(Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.stand_pos).y) 
+													< (var_list.stickmanV.stand_dims.y / 2) + 30)) {
 					playSound(var_list.run_90s_b);
 					return false;
 				}
@@ -127,8 +145,10 @@ public class MainGame extends ApplicationAdapter {
 			}
 			if (screens.char_select.isAtScreen) {
 				// clicking on CHARACTER
-				if ((Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.pos).x) < (var_list.stickmanV.dims.x / 2) + 15) && 
-					(Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.pos).y) < (var_list.stickmanV.dims.y / 2) + 30)) {
+				if ((Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.stand_pos).x) 
+													< (var_list.stickmanV.stand_dims.x / 2) + 15) && 
+					(Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.stand_pos).y) 
+													< (var_list.stickmanV.stand_dims.y / 2) + 30)) {
 					screens.char_select.close();
 					screens.game.open();
 					return false;
@@ -146,35 +166,35 @@ public class MainGame extends ApplicationAdapter {
 
 	// this function had to be implemented here because it involves input from mouse
 	static void drawInCharSelect(float x, float y, CharacterV character, Array<Sprite> sprites, HashMap<String, Integer> states) {
-		character.pos.setPosition(x,y);
+		character.stand_pos.setPosition(x,y);
 		character.scale = 0.9f;
 
-		character.eye_l.pos.setPosition(character.pos.x - 15, character.pos.y + 120);
-		character.eye_r.pos.setPosition(character.pos.x + 25, character.pos.y + 120);
+		// character.eye_l.pos.setPosition(character.pos.x - 15, character.pos.y + 120);
+		// character.eye_r.pos.setPosition(character.pos.x + 25, character.pos.y + 120);
 		// character.mouth.pos.setPosition(character.pos.x + 5, character.pos.y + 90);
 
-		if (var_list.mouse_pos.x >= character.pos.x && var_list.mouse_pos.x <= character.pos.x + 200 && 
+		if (var_list.mouse_pos.x >= character.stand_pos.x && var_list.mouse_pos.x <= character.stand_pos.x + 200 && 
 			var_list.mouse_pos.y >= 150 && var_list.mouse_pos.y <= 500) {
 			character.setState("standing", sprites, states.get("stand/looking right"));
 
-			character.eye_r.pos.setPosition(character.pos.x + 15, character.pos.y + 120);
-			character.eye_r.draw(250, 50);
+			// character.eye_r.pos.setPosition(character.pos.x + 15, character.pos.y + 120);
+			// character.eye_r.draw(250, 50);
 			// character.mouth.draw();
 		}
-		if (var_list.mouse_pos.x < character.pos.x && var_list.mouse_pos.x >= character.pos.x - 200 &&
+		if (var_list.mouse_pos.x < character.stand_pos.x && var_list.mouse_pos.x >= character.stand_pos.x - 200 &&
 			var_list.mouse_pos.y >= 150 && var_list.mouse_pos.y <= 500) {
 			character.setState("standing", sprites, states.get("stand/looking left"));
 			
-			character.eye_l.draw(250, 50);
+			// character.eye_l.draw(250, 50);
 			// character.mouth.pos.setPosition(character.pos.x, character.pos.y + 90);
 			// character.mouth.draw();
 		}
-		if (var_list.mouse_pos.x > character.pos.x + 200 || var_list.mouse_pos.x < character.pos.x - 200 || 
+		if (var_list.mouse_pos.x > character.stand_pos.x + 200 || var_list.mouse_pos.x < character.stand_pos.x - 200 || 
 			var_list.mouse_pos.y < 150 || var_list.mouse_pos.y > 500) {
 			character.setState("standing", sprites, states.get("stand/looking front"));
 
-			character.eye_l.draw(250, 50);
-			character.eye_r.draw(250, 50);
+			// character.eye_l.draw(250, 50);
+			// character.eye_r.draw(250, 50);
 			// character.mouth.draw();
 		}
 	}
@@ -300,7 +320,8 @@ public class MainGame extends ApplicationAdapter {
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
 		// TITLE SCREEN / OPTIONS SCREEN
-		if ((screens.title.isAtScreen || screens.options.isAtScreen || screens.char_select.isAtScreen) && !screens.game.isAtScreen) {	
+		if ((screens.title.isAtScreen || screens.options.isAtScreen 
+									  || screens.char_select.isAtScreen) && !screens.game.isAtScreen) {	
 			var_list.titleCounter++;
 			createBall();	// creates array of balls
 

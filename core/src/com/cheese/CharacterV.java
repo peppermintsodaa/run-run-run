@@ -2,12 +2,12 @@ package com.cheese;
 
 import java.util.HashMap;
 
-import com.badlogic.gdx.graphics.Texture;
+// import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.badlogic.gdx.Gdx;
+// import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -26,10 +26,15 @@ public class CharacterV {
     BodyPart eye_r;
     BodyPart mouth;
 
-    CharacterV (SpriteBatch batch, String eye_img, String mouth_img) {
+    CharacterV (SpriteBatch batch, String sprite_name_s, String sprite_name_r) {
         this.batch = batch;
-        eye_l = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))), true);
-		eye_r = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))), true);
+
+        this.standing_sprites = MainGame.sprites.loadAnimatedSprites(sprite_name_s);
+		this.createCharStates("standing");
+        this.running_sprites = MainGame.sprites.loadAnimatedSprites(sprite_name_r);
+		this.createCharStates("running");
+        // eye_l = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))), true);
+		// eye_r = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))), true);
 		// mouth = new BodyPart(new Sprite(new Texture(Gdx.files.internal(mouth_img))), false);
     }
 
@@ -42,41 +47,63 @@ public class CharacterV {
         }
         if (type.equals("running")) {
             running_states.put("run1", 0);
+            running_states.put("run2", 1);
+            running_states.put("run3", 2);
+            running_states.put("run4", 3);
+            running_states.put("jump1", 4);
         }
 	}
 
-    Coord pos = new Coord(0,0);
-    Coord dims = new Coord(0,0);
+    Coord stand_pos = new Coord(0,0);
+    Coord stand_dims = new Coord(0,0);
+
+    Coord run_orig_pos = new Coord(0,0);
+    Coord run_pos = new Coord(0,0);
+    Coord run_dims = new Coord(0,0);
     float scale = 1;
 
     Sprite curFrame;
-    int duration;
-    int ticks;
-
-    float p () {
-        return ticks/(float)duration;
-    }
 
     // sets state of character based on index corresponding to hash map
     void setState(String type, Array<Sprite> sprite_list, int state) {
         if (type.equals("standing")) {
             switch (state) {
-                case 1: draw(sprite_list, 1);
+                case 1: draw(sprite_list, type, 1);
                         break;
-                case 2: draw(sprite_list, 2);
+                case 2: draw(sprite_list, type, 2);
                         break;
-                default:draw(sprite_list, 0);
+                default:draw(sprite_list, type, 0);
+                        break;
+            }
+        }
+        if (type.equals("running")) {
+            switch (state) {
+                case 0: draw(sprite_list, type, 0);
+                        break;
+                case 1: draw(sprite_list, type, 1);
+                        break;
+                case 2: draw(sprite_list, type, 2);
+                        break;
+                case 3: draw(sprite_list, type, 3);
+                        break;        
+                case 4: draw(sprite_list, type, 4);
                         break;
             }
         }
     }
 
     // draws character in current state
-    boolean draw(Array<Sprite> sprite_list, int state) {
+    boolean draw(Array<Sprite> sprite_list, String type, int state) {
         curFrame = sprite_list.get(state);
         curFrame.setScale(scale);
-        pos.position(curFrame);
-        dims.dimensions(curFrame, scale);
+        if (type.equals("standing")) {
+            stand_pos.position(curFrame);
+            stand_dims.dimensions(curFrame, scale);
+        }
+        if (type.equals("running")) {
+            run_pos.position(curFrame);
+            run_dims.dimensions(curFrame, scale);
+        }
         curFrame.draw(batch);
         return true;
     }
@@ -95,11 +122,14 @@ public class CharacterV {
 		}
 
 		boolean draw (float open, float blink) {
-            float open_t = open; 
-            float blink_t = blink;
+            float open_t = open;        // how long character's eye stay open
+            float blink_t = blink;      // how long character's eye blinks.
+
+            // open_t > blink_t always
 
             if (isEye) {
-                if ((MainGame.var_list.titleCounter % open_t >= 0) && (MainGame.var_list.titleCounter % open_t < blink_t)) {
+                if ((MainGame.var_list.titleCounter % open_t >= 0) && 
+                    (MainGame.var_list.titleCounter % open_t < blink_t)) {
                     return false;
                 }
             }
