@@ -23,7 +23,7 @@ public class Animated {
     void tick() {
         int which = (int)((counter/delay) % frameList.size);
         if (which >= frameList.size) {
-             which = frameList.size - 1;
+            which = frameList.size - 1;
         }
         curFrame = frameList.get(which);
         curFrame.setScale(scale);

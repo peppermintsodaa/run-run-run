@@ -4,16 +4,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Character {
     SpriteBatch batch;
-    int counter;
+    int wait_counter;
     float delay;
     CharacterV charV;
     boolean hasJumped = false;
     boolean hasDoubleJumped = false;
     boolean isOnGround = true;
+    boolean hasCollided = false;
 
     double jump_vel = 14;
     double d_jump_vel = 14;
     double jump_accel = -0.5;
+    final int WAIT = 20;
 
     Character (SpriteBatch batch, CharacterV charV) {
         this.batch = batch;
@@ -25,7 +27,7 @@ public class Character {
     }
 
     void run(float speed) {
-        if (isOnGround) {
+        if (isOnGround && !hasCollided) {
             delay = speed;
             final int RUNNING_SPRITES_SIZE = 4;
     
@@ -38,7 +40,7 @@ public class Character {
         if (hasJumped) {
             // max_height = MainGame.screens.game.game.platform.cur_pos.y + 200;
             
-            charV.draw(charV.running_sprites, "running", 4); 
+            if (!hasCollided) charV.draw(charV.running_sprites, "running", 4); 
             if (!MainGame.screens.pausing.isAtScreen) {
                 isOnGround = false;
 
@@ -58,11 +60,27 @@ public class Character {
         }
     }
 
+    void collide() {
+        setCollided(true);
+
+        charV.draw(charV.running_sprites, "running", 0);
+        if (isOnGround && !MainGame.screens.pausing.isAtScreen) wait_counter++;
+
+        if (wait_counter > WAIT) {
+            setCollided(false);
+        }
+    }
+
+    void setCollided(boolean state) {
+        hasCollided = state;
+    }
+
     void reset() {
         charV.run_pos.y = charV.run_orig_pos.y;
         jump_vel = 14;
         d_jump_vel = 14;
         jump_accel = -0.5;
+        wait_counter = 0;
 
         hasJumped = false;
         hasDoubleJumped = false;

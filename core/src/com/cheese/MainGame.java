@@ -30,8 +30,11 @@ public class MainGame extends ApplicationAdapter {
 						screens.game.game.character.hasDoubleJumped = true;
 					screens.game.game.character.hasJumped = true;
 				}
+				if (keycode == Keys.ESCAPE) {
+					screens.pausing.open();
+				}
 			}
-			else if (keycode == Keys.ENTER) screens.pausing.close();
+			else if (keycode == Keys.ESCAPE) screens.pausing.close();
 			return false;
 		}
 
@@ -96,7 +99,7 @@ public class MainGame extends ApplicationAdapter {
 			}
 			if (screens.game.isAtScreen) {
 				// clicking on pause button
-				if (var_list.mouse_pos.minus(var_list.pause.pos).radius() < 25) {
+				if (var_list.mouse_pos.minus(var_list.pause.pos).radius() < var_list.pause.bounds) {
 					if (!screens.pausing.isAtScreen) {
 						playSound(var_list.click);
 						screens.pausing.open();

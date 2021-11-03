@@ -7,6 +7,7 @@ public class Button {
     Sprite img;
     Coord pos;
     float scale = 1;
+    float bounds;
 
     Button(Sprite img, float x, float y) {
         this.img = img;
@@ -16,6 +17,8 @@ public class Button {
     void draw () {
         pos.position(img);
         img.setScale(scale);
+        bounds = img.getWidth()/(2/scale);
+
         img.draw(MainGame.sprites.batch);
     }
 }

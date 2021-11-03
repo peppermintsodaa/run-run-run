@@ -94,11 +94,12 @@ public class ScreenModes {
 			this.isAtScreen = false;
 			game = new GameInstance();
 			game.setScene();
+			game.setCharPosition();
 		}
 
         public void draw () {
             if (this.isAtScreen) {
-				MainGame.var_list.pause.scale = 0.5f;
+				MainGame.var_list.pause.scale = 0.75f;
 				MainGame.var_list.run90s.duration = 726f;
 
                 MainGame.var_list.titleFont.draw(batch, "W.I.P", 340, 600);

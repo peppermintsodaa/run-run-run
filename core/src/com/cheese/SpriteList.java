@@ -23,6 +23,8 @@ public class SpriteList {
     Sprite platform_img;
 	Sprite game_bg_img;
 
+	Sprite obstacle_img;
+
     Array<Sprite> titleFrames;
 	Array<Sprite> hamFrames;
 
@@ -44,6 +46,8 @@ public class SpriteList {
 
         this.platform_img = new Sprite(new Texture(Gdx.files.internal("platform.png")));
 		this.game_bg_img = new Sprite(new Texture(Gdx.files.internal("bg_test.png")));
+
+		this.obstacle_img = new Sprite(new Texture(Gdx.files.internal("cheese.png")));
 
         this.hamFrames = loadAnimatedSprites("hams");
 		this.titleFrames = loadAnimatedSprites("titleText/titleText");

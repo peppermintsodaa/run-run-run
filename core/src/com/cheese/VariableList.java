@@ -98,6 +98,6 @@ public class VariableList {
 		this.onOption = generator1.generateFont(parOptionGreen);
 
         // BUTTON
-		this.pause = new Button(MainGame.sprites.pause_img, screen_size.x - 35, screen_size.y - 35);
+		this.pause = new Button(MainGame.sprites.pause_img, screen_size.x - 50, screen_size.y - 50);
     }
 }

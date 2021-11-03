@@ -38,6 +38,12 @@ public class CharacterV {
 		// mouth = new BodyPart(new Sprite(new Texture(Gdx.files.internal(mouth_img))), false);
     }
 
+    float getBounds(String type) {
+        if (type.equals("width")) return running_sprites.get(0).getWidth()/2;
+        if (type.equals("height")) return running_sprites.get(0).getHeight()/2;
+        return 0f;
+    }
+
     // list of character states
 	void createCharStates(String type) {
         if (type.equals("standing")) {
