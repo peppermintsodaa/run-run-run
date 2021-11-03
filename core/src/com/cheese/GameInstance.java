@@ -1,10 +1,17 @@
 package com.cheese;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
 public class GameInstance {
     Platform platform;
     Background background;
     Character character;
     Obstacle obstacle;
+
+    BitmapFont scoreText = MainGame.var_list.score;
+    int score = 0;
+
+    boolean isStopped = false;
 
     float sprite_height;
     final int OFFSET = 7;
@@ -19,8 +26,10 @@ public class GameInstance {
     }
 
     void setCharPosition() {
-        character.charV.run_orig_pos.setPosition(150, platform.first_pos.y + sprite_height/2 + OFFSET*platform.scale);
-        character.charV.run_pos.setPosition(150, platform.first_pos.y + sprite_height/2 + OFFSET*platform.scale);
+        float char_pos_y = platform.first_pos.y + sprite_height/2 + OFFSET*platform.scale;
+
+        character.charV.run_orig_pos.setPosition(150, char_pos_y);
+        character.charV.run_pos.setPosition(150, char_pos_y);
     }
     
     void tick() {
@@ -29,31 +38,27 @@ public class GameInstance {
         obstacle.draw();
         character.run(4);
         character.jump();
+        updateScore();
 
         collide(obstacle);
     }
 
     void collide(Obstacle obs) {
-        // float obs_bounds_width = character.charV.getBounds("width") + obs.img.getWidth()/2;
-        // float obs_bounds_height = character.charV.getBounds("height") + obs.img.getHeight()/2;
-
         if (!obs.recordCollide && Math.abs(obs.pos.minus(character.charV.run_pos).x) < obs.img.getWidth()/2 &&
                                   Math.abs(obs.pos.minus(character.charV.run_pos).y) < obs.img.getHeight()/2) {
             character.collide();
-            setCollided(true);
+            isStopped = true;
 
             if (character.wait_counter > character.WAIT) {
                 character.wait_counter = 0;
-                setCollided(false);
+                isStopped = false;
                 obs.recordCollide = true;
             }
         }
     }
 
-    void setCollided(boolean state) {
-        background.setCollided(state);
-        platform.setCollided(state);
-        obstacle.setCollided(state);
+    void updateScore() {
+        scoreText.draw(MainGame.sprites.batch, "SCORE: " + score, 10, MainGame.var_list.screen_size.y - 10);
     }
 
     void reset() {
@@ -61,5 +66,6 @@ public class GameInstance {
         platform.reset();
         obstacle.reset();
         character.reset();
+        score = 0;
     }
 }

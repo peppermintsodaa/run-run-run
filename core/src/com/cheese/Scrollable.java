@@ -61,7 +61,7 @@ public class Scrollable {
         if (MainGame.screens.game.isAtScreen) {
             vel.x = (float)speed;
 
-            if (MainGame.screens.pausing.isAtScreen || hasCollided) {
+            if (MainGame.screens.pausing.isAtScreen || MainGame.screens.game.game.isStopped) {
                 vel.x = 0;
                 first_pos = first_pos.minus(vel);
             }
@@ -94,10 +94,6 @@ public class Scrollable {
                 i++;
             }
         }
-    }
-
-    void setCollided(boolean state) {
-        hasCollided = state;
     }
 
     // resets placement of scrollable items after playing game

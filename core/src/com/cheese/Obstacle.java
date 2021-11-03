@@ -27,7 +27,7 @@ public class Obstacle {
         if (MainGame.screens.game.isAtScreen) {
             vel.x = (float)speed;
 
-            if (MainGame.screens.pausing.isAtScreen || hasCollided) {
+            if (MainGame.screens.pausing.isAtScreen || MainGame.screens.game.game.isStopped) {
                 vel.x = 0;
                 pos = pos.minus(vel);
             }
@@ -41,10 +41,6 @@ public class Obstacle {
             return false;
         }
         return true;
-    }
-
-    void setCollided(boolean state) {
-        hasCollided = state;
     }
 
     void reset() {

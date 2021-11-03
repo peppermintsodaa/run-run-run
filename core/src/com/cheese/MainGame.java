@@ -44,20 +44,23 @@ public class MainGame extends ApplicationAdapter {
 
 			if (screens.title.isAtScreen) {
 				// clicking on NEW GAME
-				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
+				if (screenX >= VariableList.adjustW(560) && screenX <= VariableList.adjustW(750) 
+					&& screenY >= VariableList.adjustH(460) && screenY <= VariableList.adjustH(490))  {
 					var_list.b.booAppeared = true;
 					playSound(var_list.boo);
 					return false;
 				}
 				// clicking on OPTIONS
-				if (screenX >= 590 && screenX <= 720 && screenY >= 500 && screenY <= 550)  {
+				if (screenX >= VariableList.adjustW(590) && screenX <= VariableList.adjustW(720) 
+					&& screenY >= VariableList.adjustH(500) && screenY <= VariableList.adjustH(550))  {
 					playSound(var_list.click);
 					screens.title.close();
 					screens.options.open();
 					return false;
 				}
 				// clicking on EXIT
-				if (screenX >= 620 && screenX <= 690 && screenY >= 560 && screenY <= 595)  {
+				if (screenX >= VariableList.adjustW(620) && screenX <= VariableList.adjustW(690) 
+					&& screenY >= VariableList.adjustH(560) && screenY <= VariableList.adjustH(595))  {
 					playSound(var_list.click);
 					Gdx.app.exit();
 					return false;
@@ -218,7 +221,7 @@ public class MainGame extends ApplicationAdapter {
 		void tick() {
 			counter = var_list.titleCounter;
 
-			pos.setPosition(640, 500);
+			pos.setPosition(VariableList.adjustW(640), VariableList.adjustH(500));
 			frameList = sprites.titleFrames;
 			delay = 8; 	// plays every 2/15th second
 
@@ -246,10 +249,16 @@ public class MainGame extends ApplicationAdapter {
 	// little boo icon appearing in title screen
 	class Boo {
 		boolean booAppeared = false;
+		Coord pos;
 
-		Boo (int x, int y) {
-			Coord pos = new Coord(x, y);
+		Boo (float x, float y) {
+			pos = new Coord(x, y);
+		}
+
+		void draw() {
+			var_list.b.pos.setPosition(VariableList.adjustW(530), VariableList.adjustH(237));
 			pos.position(sprites.boo_img);
+			sprites.boo_img.draw(sprites.batch);
 		}
 	}
 
@@ -304,6 +313,21 @@ public class MainGame extends ApplicationAdapter {
 
 		// INPUT PROCESSOR
 		Gdx.input.setInputProcessor(new InputProcessor());
+
+		var_list.camera.setToOrtho(false);
+		var_list.camera.update();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		var_list.camera.setToOrtho(false, width, height);
+		var_list.camera.update();
+
+		var_list.screen_size.setPosition(width, height);
+		// var_list.screen_size.setPosition(width, height);
+		// System.out.println(var_list.screen_size.x + ", " + var_list.screen_size.y);
+
+		// if (var_list.screen_size.x != 1280 || var_list.screen_size.y != 720) var_list.isResized = true;
 	}
 
 	@Override
@@ -313,10 +337,13 @@ public class MainGame extends ApplicationAdapter {
 			var_list.gameCounter++;
 		}
 		if (!screens.game.isAtScreen) var_list.gameCounter = 0;
+
+		sprites.batch.setProjectionMatrix(var_list.camera.combined);
+		var_list.camera.update();
 		
 		sprites.batch.begin();
 		
-		// menuFont.draw(batch, "( " + mouse_pos.x/10 + ", " + mouse_pos.y/10 + ")" , 10, 30); 		// displays mouse position
+		var_list.menuFont.draw(sprites.batch, "( " + var_list.mouse_pos.x/10 + ", " + var_list.mouse_pos.y/10 + ")" , 10, 30); 		// displays mouse position
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
 		// TITLE SCREEN / OPTIONS SCREEN
@@ -336,7 +363,7 @@ public class MainGame extends ApplicationAdapter {
 		screens.screens.draw();
 
 		// boo appears
-		if (var_list.b.booAppeared) sprites.boo_img.draw(sprites.batch);
+		if (var_list.b.booAppeared) var_list.b.draw();
 
 		for (Effect e : var_list.effects) {
 			if (e.draw() == false) trash_bin.add(e);

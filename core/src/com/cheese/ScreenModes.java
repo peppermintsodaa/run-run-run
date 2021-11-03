@@ -13,9 +13,9 @@ public class ScreenModes {
         public void draw () {
             if (this.isAtScreen) {
                 MainGame.var_list.titleText.tick();
-                MainGame.var_list.menuFont.draw(batch, "NEW GAME", 570, 250);
-				MainGame.var_list.menuFont.draw(batch, "OPTIONS", 585, 200);
-				MainGame.var_list.menuFont.draw(batch, "EXIT", 620, 150);
+                MainGame.var_list.menuFont.draw(batch, "NEW GAME", VariableList.adjustW(570), VariableList.adjustH(250));
+				MainGame.var_list.menuFont.draw(batch, "OPTIONS", VariableList.adjustW(585), VariableList.adjustH(200));
+				MainGame.var_list.menuFont.draw(batch, "EXIT", VariableList.adjustW(620), VariableList.adjustH(150));
             }
         }
     }
@@ -102,12 +102,10 @@ public class ScreenModes {
 				MainGame.var_list.pause.scale = 0.75f;
 				MainGame.var_list.run90s.duration = 726f;
 
-                MainGame.var_list.titleFont.draw(batch, "W.I.P", 340, 600);
 				MainGame.var_list.run90s.tick();
 
 				game.tick();
 
-				// MainGame.var_list.hamster.tick();
 				MainGame.var_list.pause.draw();
 			}
 			else {

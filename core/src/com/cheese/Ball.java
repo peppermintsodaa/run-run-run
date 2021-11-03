@@ -9,8 +9,8 @@ import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 
 public class Ball {
-    Coord pos = new Coord((int)(Math.random()*(MainGame.var_list.screen_size.x+1)), 
-                                               MainGame.var_list.screen_size.y+30);		// determines ball's location at top of screen
+    Coord pos = new Coord((int)(Math.random()*(MainGame.var_list.camera.viewportWidth+1)), 
+                                               MainGame.var_list.camera.viewportHeight+30);		// determines ball's location at top of screen
     Coord vel = new Coord(0,(int)(Math.random()*(5-2+1)+2));				            // determines ball's random velocity 
     Coord accel = new Coord(0, -0.5f);
 
@@ -76,6 +76,7 @@ public class Ball {
     }
 
     void draw(Ball ball, ArrayList<Object> trash) {
+        // updatePos();
         ball.pos.position(MainGame.sprites.ball_img);
         MainGame.sprites.ball_img.draw(MainGame.sprites.batch);
 

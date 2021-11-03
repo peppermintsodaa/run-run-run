@@ -44,6 +44,9 @@ public class VariableList {
 	BitmapFont titleFont;
 	BitmapFont offOption;
 	BitmapFont onOption;
+	BitmapFont score;
+
+	boolean isResized = false;
 
 	float currTime;
 	int gameCounter;
@@ -81,23 +84,35 @@ public class VariableList {
 		FreeTypeFontGenerator.FreeTypeFontParameter parTitle = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		FreeTypeFontGenerator.FreeTypeFontParameter parOptionRed = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		FreeTypeFontGenerator.FreeTypeFontParameter parOptionGreen = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		FreeTypeFontGenerator.FreeTypeFontParameter parScore = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
 		parMenu.size = 30;
 
 		parTitle.size = 90;
 
 		parOptionRed.size = 20;
-		parOptionRed.color = VariableList.RED;
+		parOptionRed.color = RED;
 
 		parOptionGreen.size = 20;
-		parOptionGreen.color = VariableList.GREEN;
+		parOptionGreen.color = GREEN;
+
+		parScore.size = 36;
 
 		this.menuFont = generator1.generateFont(parMenu);
 		this.titleFont = generator2.generateFont(parTitle);
 		this.offOption = generator1.generateFont(parOptionRed);
 		this.onOption = generator1.generateFont(parOptionGreen);
+		this.score = generator2.generateFont(parScore);
 
         // BUTTON
 		this.pause = new Button(MainGame.sprites.pause_img, screen_size.x - 50, screen_size.y - 50);
     }
+
+	public static float adjustW(float orig_width) {
+		return (orig_width/1280f)*MainGame.var_list.camera.viewportWidth;
+	}
+
+	public static float adjustH(float orig_height) {
+		return (orig_height/720f)*MainGame.var_list.camera.viewportHeight;
+	}
 }
