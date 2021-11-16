@@ -21,7 +21,10 @@ public class SpriteList {
 	Sprite mouth_img;
 
     Sprite platform_img;
-	Sprite game_bg_img;
+
+	Sprite sky_bg_img;
+	Sprite grass1_bg_img;
+	Sprite grass2_bg_img;
 
 	Sprite obstacle_img;
 
@@ -42,12 +45,15 @@ public class SpriteList {
 
 		this.pause_img = new Sprite(new Texture(Gdx.files.internal("pause.png")));
 
-		this.grey_bg = new Sprite(new Texture(Gdx.files.internal("grey.png")), 1, 1);
+		this.grey_bg = new Sprite(new Texture(Gdx.files.internal("grey.png")));
 
         this.platform_img = new Sprite(new Texture(Gdx.files.internal("platform.png")));
-		this.game_bg_img = new Sprite(new Texture(Gdx.files.internal("bg_test.png")));
+		
+		this.sky_bg_img = new Sprite(new Texture(Gdx.files.internal("sky.png")));
+		this.grass1_bg_img = new Sprite(new Texture(Gdx.files.internal("grass1.png")));
+		this.grass2_bg_img = new Sprite(new Texture(Gdx.files.internal("grass2.png")));
 
-		this.obstacle_img = new Sprite(new Texture(Gdx.files.internal("cheese.png")));
+		// this.obstacle_img = new Sprite(new Texture(Gdx.files.internal("cheese.png")));
 
         this.hamFrames = loadAnimatedSprites("hams");
 		this.titleFrames = loadAnimatedSprites("titleText/titleText");

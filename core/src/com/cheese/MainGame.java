@@ -68,13 +68,15 @@ public class MainGame extends ApplicationAdapter {
 			}
 			if (screens.options.isAtScreen) {
 				// configuring sound
-				if (screenX >= 795 && screenX <= 840 && screenY >= 320 && screenY <= 355)  {
+				if (screenX >= VariableList.adjustW(795) && screenX <= VariableList.adjustW(840) && 
+					screenY >= VariableList.adjustH(320) && screenY <= VariableList.adjustH(355))  {
 					screens.options.soundSwitch();
 					playSound(var_list.click);
 					return false;
 				}
 				// clicking on GO BACK
-				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 655)  {
+				if (screenX >= VariableList.adjustW(570) && screenX <= VariableList.adjustW(710) && 
+					screenY >= VariableList.adjustH(620) && screenY <= VariableList.adjustH(655))  {
 					playSound(var_list.click);
 					screens.options.close();
 					if (!screens.game.isAtScreen) {
@@ -85,7 +87,8 @@ public class MainGame extends ApplicationAdapter {
 			}
 			if (screens.char_select.isAtScreen) {
 				// clicking on GO BACK
-				if (screenX >= 570 && screenX <= 710 && screenY >= 620 && screenY <= 655)  {
+				if (screenX >= VariableList.adjustW(570) && screenX <= VariableList.adjustW(710) && 
+					screenY >= VariableList.adjustH(620) && screenY <= VariableList.adjustH(655))  {
 					playSound(var_list.click);
 					screens.char_select.close();
 					screens.title.open();
@@ -96,7 +99,7 @@ public class MainGame extends ApplicationAdapter {
 													< (var_list.stickmanV.stand_dims.x / 2) + 15) && 
 					(Math.abs(var_list.mouse_pos.minus(var_list.stickmanV.stand_pos).y) 
 													< (var_list.stickmanV.stand_dims.y / 2) + 30)) {
-					playSound(var_list.run_90s_b);
+					// playSound(var_list.run_90s_b);
 					return false;
 				}
 			}
@@ -110,19 +113,22 @@ public class MainGame extends ApplicationAdapter {
 					return false;
 				}
 			}
-			if (screens.pausing.isAtScreen) {
+			if (screens.pausing.isAtScreen && !screens.options.isAtScreen) {
 				// clicking on OPTIONS
-				if (screenX >= 250 && screenX <= 360 && screenY >= 570 && screenY <= 605) {
+				if (screenX >= VariableList.adjustW(250) && screenX <= VariableList.adjustW(360) && 
+					screenY >= VariableList.adjustH(570) && screenY <= VariableList.adjustH(605)) {
 					screens.options.open();
 					playSound(var_list.click);
 				}
 				// clicking on RESUME
-				if (screenX >= 570 && screenX <= 700 && screenY >= 570 && screenY <= 605) {
+				if (screenX >= VariableList.adjustW(570) && screenX <= VariableList.adjustW(700) && 
+					screenY >= VariableList.adjustH(570) && screenY <= VariableList.adjustH(605)) {
 					screens.pausing.close();
 					playSound(var_list.click);
 				}
 				// clicking on GIVE UP
-				if (screenX >= 895 && screenX <= 1000 && screenY >= 570 && screenY <= 605) {
+				if (screenX >= VariableList.adjustW(895) && screenX <= VariableList.adjustW(1000) && 
+					screenY >= VariableList.adjustH(570) && screenY <= VariableList.adjustH(605)) {
 					screens.pausing.close();
 					screens.game.close();
 					playSound(var_list.click);
@@ -138,7 +144,8 @@ public class MainGame extends ApplicationAdapter {
 
 			if (screens.title.isAtScreen) {
 				// clicking on NEW GAME
-				if (screenX >= 560 && screenX <= 750 && screenY >= 460 && screenY <= 490)  {
+				if (screenX >= VariableList.adjustW(560) && screenX <= VariableList.adjustW(750) && 
+					screenY >= VariableList.adjustH(460) && screenY <= VariableList.adjustH(490))  {
 					var_list.b.booAppeared = false;
 					playSound(var_list.click);
 					screens.title.close();
@@ -172,33 +179,33 @@ public class MainGame extends ApplicationAdapter {
 		character.stand_pos.setPosition(x,y);
 		character.scale = 0.9f;
 
-		// character.eye_l.pos.setPosition(character.pos.x - 15, character.pos.y + 120);
-		// character.eye_r.pos.setPosition(character.pos.x + 25, character.pos.y + 120);
-		// character.mouth.pos.setPosition(character.pos.x + 5, character.pos.y + 90);
+		character.eye_l.pos.setPosition(character.stand_pos.x - 15, character.stand_pos.y + 120);
+		character.eye_r.pos.setPosition(character.stand_pos.x + 25, character.stand_pos.y + 120);
+		character.mouth.pos.setPosition(character.stand_pos.x + 5, character.stand_pos.y + 90);
 
 		if (var_list.mouse_pos.x >= character.stand_pos.x && var_list.mouse_pos.x <= character.stand_pos.x + 200 && 
 			var_list.mouse_pos.y >= 150 && var_list.mouse_pos.y <= 500) {
 			character.setState("standing", sprites, states.get("stand/looking right"));
 
-			// character.eye_r.pos.setPosition(character.pos.x + 15, character.pos.y + 120);
-			// character.eye_r.draw(250, 50);
-			// character.mouth.draw();
+			character.eye_r.pos.setPosition(character.stand_pos.x + 15, character.stand_pos.y + 120);
+			character.eye_r.draw(250, 50);
+			character.mouth.draw();
 		}
 		if (var_list.mouse_pos.x < character.stand_pos.x && var_list.mouse_pos.x >= character.stand_pos.x - 200 &&
 			var_list.mouse_pos.y >= 150 && var_list.mouse_pos.y <= 500) {
 			character.setState("standing", sprites, states.get("stand/looking left"));
 			
-			// character.eye_l.draw(250, 50);
-			// character.mouth.pos.setPosition(character.pos.x, character.pos.y + 90);
-			// character.mouth.draw();
+			character.eye_l.draw(250, 50);
+			character.mouth.pos.setPosition(character.stand_pos.x, character.stand_pos.y + 90);
+			character.mouth.draw();
 		}
 		if (var_list.mouse_pos.x > character.stand_pos.x + 200 || var_list.mouse_pos.x < character.stand_pos.x - 200 || 
 			var_list.mouse_pos.y < 150 || var_list.mouse_pos.y > 500) {
 			character.setState("standing", sprites, states.get("stand/looking front"));
 
-			// character.eye_l.draw(250, 50);
-			// character.eye_r.draw(250, 50);
-			// character.mouth.draw();
+			character.eye_l.draw(250, 50);
+			character.eye_r.draw(250, 50);
+			character.mouth.draw();
 		}
 	}
 
@@ -324,6 +331,9 @@ public class MainGame extends ApplicationAdapter {
 		var_list.camera.update();
 
 		var_list.screen_size.setPosition(width, height);
+
+		VariableList.screen_w = width;
+		VariableList.screen_h = height;
 		// var_list.screen_size.setPosition(width, height);
 		// System.out.println(var_list.screen_size.x + ", " + var_list.screen_size.y);
 
@@ -343,7 +353,7 @@ public class MainGame extends ApplicationAdapter {
 		
 		sprites.batch.begin();
 		
-		var_list.menuFont.draw(sprites.batch, "( " + var_list.mouse_pos.x/10 + ", " + var_list.mouse_pos.y/10 + ")" , 10, 30); 		// displays mouse position
+		// var_list.menuFont.draw(sprites.batch, "( " + var_list.mouse_pos.x/10 + ", " + var_list.mouse_pos.y/10 + ")" , 10, 30); 		// displays mouse position
 		ArrayList<Object> trash_bin = new ArrayList<Object>();
 
 		// TITLE SCREEN / OPTIONS SCREEN
@@ -384,6 +394,9 @@ public class MainGame extends ApplicationAdapter {
 		sprites.eye_img.getTexture().dispose();
 		sprites.grey_bg.getTexture().dispose();
 		sprites.pause_img.getTexture().dispose();
+		sprites.sky_bg_img.getTexture().dispose();
+		sprites.grass1_bg_img.getTexture().dispose();
+		sprites.grass2_bg_img.getTexture().dispose();
 		for (Sprite f: sprites.titleFrames) f.getTexture().dispose();
 		for (Sprite f: sprites.hamFrames) f.getTexture().dispose();
 		for (Sprite s: var_list.stickmanV.standing_sprites) s.getTexture().dispose();

@@ -30,11 +30,11 @@ public class ScreenModes {
 
         public void draw () {
             if (this.isAtScreen) {
-                MainGame.var_list.titleFont.draw(batch, "OPTIONS", 475, 600);
-                MainGame.var_list.menuFont.draw(batch, "SOUND", 400, 400);
-				MainGame.var_list.menuFont.draw(batch, "GO BACK", 570, 100);
-				if (soundOff) MainGame.var_list.offOption.draw(batch, "OFF", 800, 390);
-				else MainGame.var_list.onOption.draw(batch, "ON", 800, 390);
+                MainGame.var_list.titleFont.draw(batch, "OPTIONS", VariableList.adjustW(475), VariableList.adjustH(600));
+                MainGame.var_list.menuFont.draw(batch, "SOUND", VariableList.adjustW(400), VariableList.adjustH(400));
+				MainGame.var_list.menuFont.draw(batch, "GO BACK", VariableList.adjustW(570), VariableList.adjustH(100));
+				if (soundOff) MainGame.var_list.offOption.draw(batch, "OFF", VariableList.adjustW(800), VariableList.adjustH(390));
+				else MainGame.var_list.onOption.draw(batch, "ON", VariableList.adjustW(800), VariableList.adjustH(390));
             }
         }
 
@@ -52,10 +52,11 @@ public class ScreenModes {
 
         public void draw () {
             if (this.isAtScreen) {
-                MainGame.var_list.titleFont.draw(batch, "SELECT CHARACTER", 250, 600);
-				MainGame.var_list.menuFont.draw(batch, "GO BACK", 570, 100);
+                MainGame.var_list.titleFont.draw(batch, "SELECT CHARACTER", VariableList.adjustW(250), VariableList.adjustH(600));
+				MainGame.var_list.menuFont.draw(batch, "GO BACK", VariableList.adjustW(570), VariableList.adjustH(100));
 
-				MainGame.drawInCharSelect(640, 320, MainGame.var_list.stickmanV, 
+				MainGame.drawInCharSelect(VariableList.adjustW(640), VariableList.adjustH(320), 
+													MainGame.var_list.stickmanV, 
 													MainGame.var_list.stickmanV.standing_sprites, 
 													MainGame.var_list.stickmanV.standing_states);
         	}
@@ -73,14 +74,15 @@ public class ScreenModes {
             if (this.isAtScreen) {
 				Coord pos = new Coord (0,0);
 				// grey background that appears when pausing
+				MainGame.sprites.grey_bg.setSize(MainGame.var_list.screen_size.x, MainGame.var_list.screen_size.y);
 				pos.position(MainGame.sprites.grey_bg);
 				MainGame.sprites.grey_bg.draw(batch);
 
                 if (!MainGame.screens.options.isAtScreen) {
-					MainGame.var_list.titleFont.draw(batch, "PAUSED", 500, 400);
-					MainGame.var_list.menuFont.draw(batch, "OPTIONS", 250, 150);
-					MainGame.var_list.menuFont.draw(batch, "RESUME", 575, 150);
-					MainGame.var_list.menuFont.draw(batch, "GIVE UP", 900, 150);
+					MainGame.var_list.titleFont.draw(batch, "PAUSED", VariableList.adjustW(500), VariableList.adjustH(400));
+					MainGame.var_list.menuFont.draw(batch, "OPTIONS", VariableList.adjustW(250), VariableList.adjustH(150));
+					MainGame.var_list.menuFont.draw(batch, "RESUME", VariableList.adjustW(575), VariableList.adjustH(150));
+					MainGame.var_list.menuFont.draw(batch, "GIVE UP", VariableList.adjustW(900), VariableList.adjustH(150));
 				}
 			}
 		}
@@ -99,20 +101,12 @@ public class ScreenModes {
 
         public void draw () {
             if (this.isAtScreen) {
-				MainGame.var_list.pause.scale = 0.75f;
-				MainGame.var_list.run90s.duration = 726f;
-
-				MainGame.var_list.run90s.tick();
-
+				// MainGame.var_list.run90s.tick();
 				game.tick();
-
-				MainGame.var_list.pause.draw();
 			}
 			else {
 				game.reset();
-
-				MainGame.var_list.run90s.soundCounter = 0;
-				MainGame.var_list.run90s.music.stop();
+				// MainGame.var_list.run90s.music.stop();
 			}
 		}
     }

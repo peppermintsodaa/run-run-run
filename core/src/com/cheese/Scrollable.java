@@ -58,6 +58,8 @@ public class Scrollable {
     }
 
     void draw() {
+        screen_size = MainGame.var_list.screen_size;
+
         if (MainGame.screens.game.isAtScreen) {
             vel.x = (float)speed;
 
@@ -80,13 +82,13 @@ public class Scrollable {
 
                 // append new platform unit to keep continuous flow
                 if (i == pos.size() - 1 && pos.get(i).x <= (screen_size.x -(img.getWidth()*scale / 2))
-                                        && pos.size() < 2*getSpriteSize() + 1) {
+                                        && pos.size() < 3*getSpriteSize() + 1) {
                     sprites.add(img);
                     pos.add(pos.get(i).plus(new Coord(img.getWidth()*scale, 0)));
                 }
 
                 // remove off-screen platform unit
-                if (i == 0 && pos.get(i).x < -(img.getWidth()*scale / 2) && pos.size() >= 2*getSpriteSize()) {
+                if (i == 0 && pos.get(i).x < -(img.getWidth()*scale / 2) && pos.size() >= 3*getSpriteSize()) {
                     sprites.remove(i);
                     pos.remove(i);
                 }

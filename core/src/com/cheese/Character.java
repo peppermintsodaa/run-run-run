@@ -61,18 +61,24 @@ public class Character {
     }
 
     void collide() {
-        setCollided(true);
-
-        charV.draw(charV.running_sprites, "running", 0);
         if (isOnGround && !MainGame.screens.pausing.isAtScreen) wait_counter++;
 
         if (wait_counter > WAIT) {
             setCollided(false);
         }
+        else {
+            setCollided(true);
+            charV.draw(charV.running_sprites, "running", 0);
+        }
     }
 
     void setCollided(boolean state) {
         hasCollided = state;
+    }
+
+    void draw(float speed) {
+        run(speed);
+        jump();
     }
 
     void reset() {

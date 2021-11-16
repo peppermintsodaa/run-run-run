@@ -10,12 +10,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import com.badlogic.gdx.Gdx;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 import java.util.ArrayList;
 
 public class VariableList {
     Coord screen_size;
+	static float screen_w;
+	static float screen_h;
 	Coord mouse_pos = new Coord(0,0);
 
 	OrthographicCamera camera;
@@ -26,7 +29,7 @@ public class VariableList {
 	Sound boo;
 	Sound click;
 	Sound run_90s_b;
-	Sound run_90s_a;
+	Music run_90s_a;
 
 	BGM run90s;
 
@@ -69,16 +72,16 @@ public class VariableList {
 		this.stickman = new Character(MainGame.sprites.batch, stickmanV);
 
 		// AUDIO
-		this.boo = Gdx.audio.newSound(Gdx.files.internal("boo.wav"));
-		this.click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
-		this.run_90s_b = Gdx.audio.newSound(Gdx.files.internal("running90s_before.wav"));
-		this.run_90s_a = Gdx.audio.newSound(Gdx.files.internal("running90s_after.wav"));
+		this.boo = Gdx.audio.newSound(Gdx.files.internal("audio/boo.wav"));
+		this.click = Gdx.audio.newSound(Gdx.files.internal("audio/click.mp3"));
+		// this.run_90s_b = Gdx.audio.newSound(Gdx.files.internal("audio/running90s_before.wav"));
+		// this.run_90s_a = Gdx.audio.newMusic(Gdx.files.internal("audio/running90s_after.wav"));
 
-		this.run90s = new BGM(run_90s_a);
+		// this.run90s = new BGM(run_90s_a);
 
         // TEXT
-		FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("couture-bld.otf"));
-		FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(Gdx.files.internal("fontClayToy.ttf"));
+		FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("font/couture-bld.otf"));
+		FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(Gdx.files.internal("font/fontClayToy.ttf"));
 
 		FreeTypeFontGenerator.FreeTypeFontParameter parMenu = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		FreeTypeFontGenerator.FreeTypeFontParameter parTitle = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -105,14 +108,14 @@ public class VariableList {
 		this.score = generator2.generateFont(parScore);
 
         // BUTTON
-		this.pause = new Button(MainGame.sprites.pause_img, screen_size.x - 50, screen_size.y - 50);
+		this.pause = new Button(MainGame.sprites.pause_img);
     }
 
 	public static float adjustW(float orig_width) {
-		return (orig_width/1280f)*MainGame.var_list.camera.viewportWidth;
+		return (orig_width/1280f)*screen_w;
 	}
 
 	public static float adjustH(float orig_height) {
-		return (orig_height/720f)*MainGame.var_list.camera.viewportHeight;
+		return (orig_height/720f)*screen_h;
 	}
 }

@@ -5,13 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 // button object to press on
 public class Button {
     Sprite img;
-    Coord pos;
+    Coord pos = new Coord(0,0);
     float scale = 1;
     float bounds;
 
-    Button(Sprite img, float x, float y) {
+    Button(Sprite img) {
         this.img = img;
-        this.pos = new Coord(x,y);
     }
 
     void draw () {

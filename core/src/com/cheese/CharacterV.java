@@ -33,9 +33,9 @@ public class CharacterV {
 		this.createCharStates("standing");
         this.running_sprites = MainGame.sprites.loadAnimatedSprites(sprite_name_r);
 		this.createCharStates("running");
-        // eye_l = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))), true);
-		// eye_r = new BodyPart(new Sprite(new Texture(Gdx.files.internal(eye_img))), true);
-		// mouth = new BodyPart(new Sprite(new Texture(Gdx.files.internal(mouth_img))), false);
+        eye_l = new BodyPart(MainGame.sprites.eye_img, true);
+		eye_r = new BodyPart(MainGame.sprites.eye_img, true);
+		mouth = new BodyPart(MainGame.sprites.mouth_img, false);
     }
 
     float getBounds(String type) {
@@ -146,5 +146,11 @@ public class CharacterV {
 
 			return true;
 		}
+
+        void draw() {
+            pos.position(img);
+			img.setScale(scale);
+			img.draw(batch);
+        }
 	}
 }
