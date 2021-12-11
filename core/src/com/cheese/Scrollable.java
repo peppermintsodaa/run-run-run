@@ -17,8 +17,6 @@ public class Scrollable {
     Coord vel;
     float scale;
 
-    boolean hasCollided = false;
-
     Scrollable(float speed, float x, float y) {
         setSpeed(speed);
 
@@ -63,7 +61,7 @@ public class Scrollable {
         if (MainGame.screens.game.isAtScreen) {
             vel.x = (float)speed;
 
-            if (MainGame.screens.pausing.isAtScreen || MainGame.screens.game.game.isStopped) {
+            if (MainGame.screens.pausing.isAtScreen || MainGame.var_list.game.isStopped) {
                 vel.x = 0;
                 first_pos = first_pos.minus(vel);
             }

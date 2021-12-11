@@ -3,13 +3,13 @@ package com.cheese;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 // button object to press on
-public class Button {
+public class Button2 {
     Sprite img;
     Coord pos = new Coord(0,0);
     float scale = 1;
     float bounds;
 
-    Button(Sprite img) {
+    Button2(Sprite img) {
         this.img = img;
     }
 

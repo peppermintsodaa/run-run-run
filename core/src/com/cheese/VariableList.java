@@ -13,18 +13,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+
 import java.util.ArrayList;
 
 public class VariableList {
     Coord screen_size;
-	static float screen_w;
-	static float screen_h;
+	static float screen_w = 1280f;
+	static float screen_h = 720f; 
 	Coord mouse_pos = new Coord(0,0);
 
 	OrthographicCamera camera;
 
 	Character stickman;
 	CharacterV stickmanV;
+
+	GameInstance game;
 
 	Sound boo;
 	Sound click;
@@ -39,9 +43,10 @@ public class VariableList {
 	ArrayList<Effect> effects = new ArrayList<Effect>();
 
 	TitleText titleText;
-	Hamster hamster;
 
-	Button pause;
+	Button2 pause;
+	Button pause2;
+	Button test;
 
 	BitmapFont menuFont;
 	BitmapFont titleFont;
@@ -50,10 +55,15 @@ public class VariableList {
 	BitmapFont score;
 
 	boolean isResized = false;
+	boolean soundOff = true;
 
 	float currTime;
 	int gameCounter;
+	int playtime;
 	int titleCounter = 0;
+
+	final float MENU_FONT_H = 22;
+	final float TOGGLE_FONT_H = 15;
 
 	static final Color GREEN = new Color(0, 1, 0, 1);
 	static final Color RED = new Color(1, 0, 0, 1);
@@ -108,14 +118,8 @@ public class VariableList {
 		this.score = generator2.generateFont(parScore);
 
         // BUTTON
-		this.pause = new Button(MainGame.sprites.pause_img);
+		this.pause = new Button2(MainGame.sprites.pause_img);
+		this.pause2 = new Button();
+		this.test = new Button();
     }
-
-	public static float adjustW(float orig_width) {
-		return (orig_width/1280f)*screen_w;
-	}
-
-	public static float adjustH(float orig_height) {
-		return (orig_height/720f)*screen_h;
-	}
 }

@@ -12,10 +12,10 @@ public class Character {
     boolean isOnGround = true;
     boolean hasCollided = false;
 
-    double jump_vel = 14;
-    double d_jump_vel = 14;
+    double jump_vel = 15;
+    double d_jump_vel = 15;
     double jump_accel = -0.5;
-    final int WAIT = 20;
+    final float WAIT = 25;
 
     Character (SpriteBatch batch, CharacterV charV) {
         this.batch = batch;
@@ -52,10 +52,7 @@ public class Character {
                     charV.run_pos.y = (float)(charV.run_pos.y + jump_vel);
                     jump_vel += jump_accel;
                 }
-            }
-
-            if (charV.run_pos.y < charV.run_orig_pos.y) {
-                reset();
+                if (charV.run_pos.y < charV.run_orig_pos.y) reset();
             }
         }
     }
@@ -68,7 +65,6 @@ public class Character {
         }
         else {
             setCollided(true);
-            charV.draw(charV.running_sprites, "running", 0);
         }
     }
 
@@ -79,12 +75,14 @@ public class Character {
     void draw(float speed) {
         run(speed);
         jump();
+
+        if (hasCollided) charV.draw(charV.running_sprites, "running", 0);
     }
 
     void reset() {
         charV.run_pos.y = charV.run_orig_pos.y;
-        jump_vel = 14;
-        d_jump_vel = 14;
+        jump_vel = 15;
+        d_jump_vel = 15;
         jump_accel = -0.5;
         wait_counter = 0;
 

@@ -1,11 +1,16 @@
 package com.cheese;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 
 public class ScreenModes {
 	SpriteBatch batch = MainGame.sprites.batch;
 	
-    public class TitleScreen extends ScreenMode {      
+    public class TitleScreen extends ScreenMode {     
+		float new_game_w;
+		float options_w;
+		float exit_w;
+
 		TitleScreen() {
 			super();
 		}
@@ -13,15 +18,21 @@ public class ScreenModes {
         public void draw () {
             if (this.isAtScreen) {
                 MainGame.var_list.titleText.tick();
-                MainGame.var_list.menuFont.draw(batch, "NEW GAME", VariableList.adjustW(570), VariableList.adjustH(250));
-				MainGame.var_list.menuFont.draw(batch, "OPTIONS", VariableList.adjustW(585), VariableList.adjustH(200));
-				MainGame.var_list.menuFont.draw(batch, "EXIT", VariableList.adjustW(620), VariableList.adjustH(150));
+                new_game_w = MainGame.var_list.menuFont.draw(batch, "NEW GAME", adjustW(640), 
+																			  	adjustH(250), 0, Align.center, false).width;
+				options_w = MainGame.var_list.menuFont.draw(batch, "OPTIONS", adjustW(640), 
+																			  adjustH(200), 0, Align.center, false).width;
+				exit_w = MainGame.var_list.menuFont.draw(batch, "EXIT", adjustW(640), 
+																		adjustH(150), 0, Align.center, false).width;
             }
         }
     }
 
 	public class OptionsScreen extends ScreenMode {
 		boolean soundOff = true;
+
+		float toggle_sound_w;
+		float go_back_w;
         
 		OptionsScreen() {
 			super();
@@ -30,11 +41,17 @@ public class ScreenModes {
 
         public void draw () {
             if (this.isAtScreen) {
-                MainGame.var_list.titleFont.draw(batch, "OPTIONS", VariableList.adjustW(475), VariableList.adjustH(600));
-                MainGame.var_list.menuFont.draw(batch, "SOUND", VariableList.adjustW(400), VariableList.adjustH(400));
-				MainGame.var_list.menuFont.draw(batch, "GO BACK", VariableList.adjustW(570), VariableList.adjustH(100));
-				if (soundOff) MainGame.var_list.offOption.draw(batch, "OFF", VariableList.adjustW(800), VariableList.adjustH(390));
-				else MainGame.var_list.onOption.draw(batch, "ON", VariableList.adjustW(800), VariableList.adjustH(390));
+				MainGame.var_list.titleFont.draw(batch, "OPTIONS", adjustW(640), 
+																   adjustH(600), 0, Align.center, false);
+                MainGame.var_list.menuFont.draw(batch, "SOUND", adjustW(440), 
+																adjustH(400), 0, Align.center, false);
+				go_back_w = MainGame.var_list.menuFont.draw(batch, "GO BACK", adjustW(640), 
+																 			  adjustH(100), 0, Align.center, false).width;
+				if (soundOff) 
+					toggle_sound_w = MainGame.var_list.offOption.draw(batch, "OFF", adjustW(840), 
+																			 		adjustH(395), 0, Align.center, false).width;
+				else toggle_sound_w = MainGame.var_list.onOption.draw(batch, "ON", adjustW(840), 
+																  				   adjustH(395), 0, Align.center, false).width;
             }
         }
 
@@ -45,6 +62,8 @@ public class ScreenModes {
     }
 
 	public class CharSelectScreen extends ScreenMode {
+		float go_back_w;
+
         CharSelectScreen() {
 			super();
 			this.isAtScreen = false;
@@ -52,10 +71,10 @@ public class ScreenModes {
 
         public void draw () {
             if (this.isAtScreen) {
-                MainGame.var_list.titleFont.draw(batch, "SELECT CHARACTER", VariableList.adjustW(250), VariableList.adjustH(600));
-				MainGame.var_list.menuFont.draw(batch, "GO BACK", VariableList.adjustW(570), VariableList.adjustH(100));
+                MainGame.var_list.titleFont.draw(batch, "SELECT CHARACTER", adjustW(640), adjustH(600), 0, Align.center, false);
+				go_back_w = MainGame.var_list.menuFont.draw(batch, "GO BACK", adjustW(640), adjustH(100), 0, Align.center, false).width;
 
-				MainGame.drawInCharSelect(VariableList.adjustW(640), VariableList.adjustH(320), 
+				MainGame.drawInCharSelect(adjustW(640), adjustH(320), 
 													MainGame.var_list.stickmanV, 
 													MainGame.var_list.stickmanV.standing_sprites, 
 													MainGame.var_list.stickmanV.standing_states);
@@ -64,13 +83,17 @@ public class ScreenModes {
     }
 
 	public class PauseScreen extends ScreenMode {
+		float options_w;
+		float resume_w;
+		float give_up_w;
+
         PauseScreen () {
 			super();
 			this.isAtScreen = false;
 		}
         
 		@Override
-        public void draw () {
+        public void draw () {			
             if (this.isAtScreen) {
 				Coord pos = new Coord (0,0);
 				// grey background that appears when pausing
@@ -79,37 +102,43 @@ public class ScreenModes {
 				MainGame.sprites.grey_bg.draw(batch);
 
                 if (!MainGame.screens.options.isAtScreen) {
-					MainGame.var_list.titleFont.draw(batch, "PAUSED", VariableList.adjustW(500), VariableList.adjustH(400));
-					MainGame.var_list.menuFont.draw(batch, "OPTIONS", VariableList.adjustW(250), VariableList.adjustH(150));
-					MainGame.var_list.menuFont.draw(batch, "RESUME", VariableList.adjustW(575), VariableList.adjustH(150));
-					MainGame.var_list.menuFont.draw(batch, "GIVE UP", VariableList.adjustW(900), VariableList.adjustH(150));
+					MainGame.var_list.titleFont.draw(batch, "PAUSED", adjustW(640), adjustH(400), 0, Align.center, false);
+					options_w = MainGame.var_list.menuFont.draw(batch, "OPTIONS", adjustW(320), adjustH(150), 0, Align.center, false).width;
+					resume_w = MainGame.var_list.menuFont.draw(batch, "RESUME", adjustW(640), adjustH(150), 0, Align.center, false).width;
+					give_up_w = MainGame.var_list.menuFont.draw(batch, "GIVE UP", adjustW(960), adjustH(150), 0, Align.center, false).width;
 				}
 			}
 		}
     }
 
 	public class GameScreen extends ScreenMode {
-		GameInstance game;
-
 		GameScreen() {
 			super();
 			this.isAtScreen = false;
-			game = new GameInstance();
-			game.setScene();
-			game.setCharPosition();
+			MainGame.var_list.game = new GameInstance();
+			MainGame.var_list.game.setScene();
+			MainGame.var_list.game.setCharPosition();
 		}
 
         public void draw () {
             if (this.isAtScreen) {
 				// MainGame.var_list.run90s.tick();
-				game.tick();
+				MainGame.var_list.game.tick();
 			}
 			else {
-				game.reset();
+				MainGame.var_list.game.reset();
 				// MainGame.var_list.run90s.music.stop();
 			}
 		}
     }
+
+	public static float adjustW(float orig_width) {
+		return (orig_width/1280f)*VariableList.screen_w;
+	}
+
+	public static float adjustH(float orig_height) {
+		return (orig_height/720f)*VariableList.screen_h;
+	}
 
 	void draw() {
 		MainGame.screens.title.draw();

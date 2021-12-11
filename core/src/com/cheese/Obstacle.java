@@ -9,6 +9,7 @@ public class Obstacle {
     float scale = 1;
 
     float count = 0;
+    float wait_counter = 25;
 
     double speed;
     Coord vel;
@@ -29,10 +30,10 @@ public class Obstacle {
     }
 
     boolean draw() {
-        if (MainGame.screens.game.isAtScreen && MainGame.var_list.gameCounter >= count) {
+        if (MainGame.var_list.gameCounter >= count) {
             vel.x = (float)speed;
 
-            if (MainGame.screens.pausing.isAtScreen || MainGame.screens.game.game.isStopped) {
+            if (MainGame.screens.pausing.isAtScreen || MainGame.var_list.game.isStopped) {
                 vel.x = 0;
                 pos = pos.minus(vel);
             }
@@ -54,17 +55,37 @@ public class Obstacle {
             if (chr.wait_counter > chr.WAIT) {
                 chr.wait_counter = 0;
                 recordCollide = true;
-                MainGame.screens.game.game.setStopped(false);
+                MainGame.var_list.game.setStopped(false);
             }
             else {
                 chr.collide();
-                MainGame.screens.game.game.setStopped(true);
+                shakeCamera(chr);
+                MainGame.var_list.game.setStopped(true);
             }
         }
     }
 
+    void shakeCamera(Character chr) {
+        float orig_w = VariableList.screen_w;
+        float orig_h = VariableList.screen_h;
+
+        float offset = (4*wait_counter)*(float)Math.sin(2*wait_counter);
+
+        if (!MainGame.screens.pausing.isAtScreen) {
+            MainGame.var_list.camera.translate(offset, 0);
+            
+            if (wait_counter == 0) 
+                MainGame.var_list.camera.setToOrtho(false, orig_w, orig_h);
+            else --wait_counter;
+        }
+        else MainGame.var_list.camera.setToOrtho(false, orig_w, orig_h);
+    }
+
     void reset() {
+        orig_pos.setPosition(MainGame.var_list.screen_size.x + img.getWidth(),orig_pos.y);
         pos.setPosition(orig_pos.x, orig_pos.y);
+
+        wait_counter = 30;
         recordCollide = false;
     }
 }

@@ -26,6 +26,8 @@ public class SpriteList {
 	Sprite grass1_bg_img;
 	Sprite grass2_bg_img;
 
+	Sprite heart_img;
+
 	Sprite obstacle_img;
 
     Array<Sprite> titleFrames;
@@ -49,11 +51,13 @@ public class SpriteList {
 
         this.platform_img = new Sprite(new Texture(Gdx.files.internal("platform.png")));
 		
+		// BACKGROUND
 		this.sky_bg_img = new Sprite(new Texture(Gdx.files.internal("sky.png")));
 		this.grass1_bg_img = new Sprite(new Texture(Gdx.files.internal("grass1.png")));
 		this.grass2_bg_img = new Sprite(new Texture(Gdx.files.internal("grass2.png")));
 
-		// this.obstacle_img = new Sprite(new Texture(Gdx.files.internal("cheese.png")));
+		// LIFE
+		this.heart_img = new Sprite(new Texture(Gdx.files.internal("life.png")));
 
         this.hamFrames = loadAnimatedSprites("hams");
 		this.titleFrames = loadAnimatedSprites("titleText/titleText");

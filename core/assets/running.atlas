@@ -1,0 +1,24 @@
+running.png
+  size:627, 417
+  format: RGBA8888
+  filter: Linear, Linear       
+  repeat: none
+  pma: false
+s
+  bounds: 0, 0, 209, 208
+  index: 0
+s
+  bounds: 209, 0, 209, 208
+  index: 1
+s
+  bounds: 418, 0, 209, 208
+  index: 2
+s
+  bounds: 0, 208, 209, 208
+  index: 3
+s
+  bounds: 209, 208, 209, 208
+  index: 4
+s
+  bounds: 418, 208, 209, 208
+  index: 5

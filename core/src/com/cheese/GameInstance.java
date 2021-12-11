@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Gdx;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+
 import java.util.ArrayList;
 
 public class GameInstance {
@@ -15,22 +17,27 @@ public class GameInstance {
     ArrayList<Obstacle> obstacles;
     // ArrayList<Collectable> collectables;
 
-    Button pause;
+    Button2 pause;
+    Button pause2;
 
-    Coord screen_size;
+    Coord screen_size = MainGame.var_list.screen_size;
 
     Map map;
+
+    Lives lives;
 
     BitmapFont scoreText = MainGame.var_list.score;
     int score = 0;
 
     boolean isStopped = false;
+    boolean gameOver = false;
+    int wait_counter = 20;
 
     float sprite_height;
     final int OFFSET = 7;
     
     void setScene() {
-        platform = new Platform(6, 75, 35);
+        platform = new Platform(6, MainGame.adjustW(75), MainGame.adjustH(35));
 
         bg_front1 = new Background(MainGame.sprites.grass2_bg_img, 10);
         bg_front2 = new Background(MainGame.sprites.grass1_bg_img, 7);
@@ -46,7 +53,17 @@ public class GameInstance {
         for (int i = 0; i < map.obs_list.length; ++i) map.loadObstacles(i, 6);
         // map.loadCollectables();
 
+        lives = new Lives();
+        lives.create();
+
         sprite_height = character.charV.running_sprites.get(0).getHeight();
+    }
+    
+    void setCharPosition() {
+        float char_pos_y = platform.first_pos.y + sprite_height/2 + OFFSET*platform.scale;
+
+        character.charV.run_orig_pos.setPosition(150, char_pos_y);
+        character.charV.run_pos.setPosition(150, char_pos_y);
     }
     
     class Map {
@@ -74,7 +91,7 @@ public class GameInstance {
                 String value = line.substring(2);
 
                 if (line.trim().startsWith("@")) 
-                     when = Integer.valueOf(value).intValue();
+                    when = Integer.valueOf(value).intValue();
                 if (line.trim().startsWith("#")) 
                     img = new Sprite(new Texture(Gdx.files.internal(value + ".png")));
                 if (line.trim().startsWith("h"))
@@ -85,11 +102,48 @@ public class GameInstance {
         }
     }
 
-    void setCharPosition() {
-        float char_pos_y = platform.first_pos.y + sprite_height/2 + OFFSET*platform.scale;
+    class Lives {
+        ArrayList<Sprite> lives;
+        ArrayList<Coord> pos;
 
-        character.charV.run_orig_pos.setPosition(150, char_pos_y);
-        character.charV.run_pos.setPosition(150, char_pos_y);
+        Sprite img = MainGame.sprites.heart_img;
+        final int NUMBER_OF_LIVES = 3;
+        int count = 0;
+
+        Lives() {
+            lives = new ArrayList<Sprite>();
+            pos = new ArrayList<Coord>();
+        }
+        
+        void create() {
+            while (lives.size() < NUMBER_OF_LIVES) lives.add(img);
+
+            for (int i = 0; i < NUMBER_OF_LIVES; i++) {
+                pos.add(new Coord(screen_size.x - (60*i) - 120, screen_size.y - 50));
+            }
+        }
+
+        void update() {
+            for (int i = 0; i < lives.size(); i++) {
+                pos.get(i).position(lives.get(i));
+                lives.get(i).draw(MainGame.sprites.batch);
+            }
+
+            for (int i = 0; i < pos.size(); i++) 
+                pos.get(i).setPosition(screen_size.x - (60*i) - 120, screen_size.y - 50);
+
+            if (character.hasCollided && count < 1) {
+                lives.remove(0);
+                count++;
+            }
+            else if (!character.hasCollided) count = 0;
+            
+            if (lives.size() == 0) gameOver = true;
+        }
+
+        void reset() {
+            while (lives.size() < NUMBER_OF_LIVES) lives.add(img);
+        }
     }
     
     void tick() {
@@ -108,6 +162,8 @@ public class GameInstance {
         
         character.draw(4);
         updateScore();
+
+        lives.update();
 
         pause.scale = 0.75f;
         pause.pos.setPosition(screen_size.x - 50, screen_size.y - 50);
@@ -130,6 +186,10 @@ public class GameInstance {
         platform.reset();
         for (Obstacle obs : obstacles) obs.reset();
         character.reset();
+
+        lives.reset();
+
         score = 0;
+        gameOver = false;
     }
 }
