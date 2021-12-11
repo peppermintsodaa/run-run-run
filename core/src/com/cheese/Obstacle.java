@@ -14,7 +14,9 @@ public class Obstacle {
     double speed;
     Coord vel;
 
-    boolean hasCollided = false;
+    boolean inbound_w;
+    boolean inbound_h;
+
     boolean recordCollide = false;
 
     Obstacle(Sprite img, float count, double speed, float y) {
@@ -46,19 +48,23 @@ public class Obstacle {
         if (pos.x < -img.getWidth()/2) {
             return false;
         }
+        System.out.println(wait_counter);
         return true;
     }
 
     void collide(Character chr) {
-        if (!recordCollide && Math.abs(pos.minus(chr.charV.run_pos).x) < img.getWidth()/2 &&
-                              Math.abs(pos.minus(chr.charV.run_pos).y) < img.getHeight()/2) {
+        inbound_w = Math.abs(pos.minus(chr.charV.run_pos).x) < img.getWidth()/2;
+        inbound_h = Math.abs(pos.minus(chr.charV.run_pos).y) < img.getHeight()/2;
+
+        if (!recordCollide) {
             if (chr.wait_counter > chr.WAIT) {
+                chr.setCollided(false);
                 chr.wait_counter = 0;
                 recordCollide = true;
                 MainGame.var_list.game.setStopped(false);
             }
-            else {
-                chr.collide();
+            else if (inbound_w && inbound_h) {
+                chr.setCollided(true);
                 shakeCamera(chr);
                 MainGame.var_list.game.setStopped(true);
             }
@@ -69,9 +75,11 @@ public class Obstacle {
         float orig_w = VariableList.screen_w;
         float orig_h = VariableList.screen_h;
 
+        inbound_w = Math.abs(pos.minus(chr.charV.run_pos).x) < img.getWidth()/2;
+
         float offset = (4*wait_counter)*(float)Math.sin(2*wait_counter);
 
-        if (!MainGame.screens.pausing.isAtScreen) {
+        if (!MainGame.screens.pausing.isAtScreen && inbound_w) {
             MainGame.var_list.camera.translate(offset, 0);
             
             if (wait_counter == 0) 
@@ -85,7 +93,7 @@ public class Obstacle {
         orig_pos.setPosition(MainGame.var_list.screen_size.x + img.getWidth(),orig_pos.y);
         pos.setPosition(orig_pos.x, orig_pos.y);
 
-        wait_counter = 30;
+        wait_counter = 25;
         recordCollide = false;
     }
 }

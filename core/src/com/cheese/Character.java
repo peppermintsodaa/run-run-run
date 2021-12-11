@@ -76,7 +76,10 @@ public class Character {
         run(speed);
         jump();
 
-        if (hasCollided) charV.draw(charV.running_sprites, "running", 0);
+        if (hasCollided) {
+            charV.draw(charV.running_sprites, "running", 0);
+            if (isOnGround && !MainGame.screens.pausing.isAtScreen) wait_counter++;
+        }
     }
 
     void reset() {

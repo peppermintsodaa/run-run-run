@@ -156,8 +156,7 @@ public class GameInstance {
         platform.draw();
 
         for (Obstacle obs : obstacles) {
-            obs.draw();
-            obs.collide(character);
+            if (obs.draw()) obs.collide(character);
         }
         
         character.draw(4);
@@ -168,6 +167,8 @@ public class GameInstance {
         pause.scale = 0.75f;
         pause.pos.setPosition(screen_size.x - 50, screen_size.y - 50);
         pause.draw();
+
+        if (gameOver) setStopped(true);
     }
 
     void updateScore() {
@@ -190,6 +191,7 @@ public class GameInstance {
         lives.reset();
 
         score = 0;
+        isStopped = false;
         gameOver = false;
     }
 }
