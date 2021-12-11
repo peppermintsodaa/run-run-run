@@ -1,0 +1,18 @@
+menu.png
+  size:179, 120
+  format: RGBA8888
+  filter: Linear, Linear
+  repeat: none
+  pma: false
+s
+  bounds: 0, 0, 179, 30
+  index: 0
+s
+  bounds: 0, 30, 179, 30
+  index: 1
+s
+  bounds: 0, 60, 179, 30
+  index: 2
+  s
+  bounds: 0, 90, 179, 30
+  index: 3

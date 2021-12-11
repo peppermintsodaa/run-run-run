@@ -17,6 +17,8 @@ public class SpriteList {
 	Sprite pause_img;
 	Sprite grey_bg;
 
+	Array<Sprite> menu_img;
+
 	Sprite eye_img;
 	Sprite mouth_img;
 
@@ -27,8 +29,6 @@ public class SpriteList {
 	Sprite grass2_bg_img;
 
 	Sprite heart_img;
-
-	Sprite obstacle_img;
 
     Array<Sprite> titleFrames;
 	Array<Sprite> hamFrames;
@@ -41,6 +41,8 @@ public class SpriteList {
 
 		this.ball_img = new Sprite(new Texture(Gdx.files.internal("ball2.png")));
 		ball_img.setScale(0.5f);
+
+		this.menu_img = loadAnimatedSprites("menu");
 
 		this.eye_img = new Sprite(new Texture(Gdx.files.internal("eye.png")));
 		this.mouth_img = new Sprite(new Texture(Gdx.files.internal("mouth.png")));
@@ -61,6 +63,8 @@ public class SpriteList {
 
         this.hamFrames = loadAnimatedSprites("hams");
 		this.titleFrames = loadAnimatedSprites("titleText/titleText");
+
+		// this.pause2 = new Button();
     }
 
     // loads sprites into an array to use for animating

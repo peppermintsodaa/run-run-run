@@ -2,34 +2,39 @@ package com.cheese;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
 public class ScreenModes {
 	SpriteBatch batch = MainGame.sprites.batch;
 	
     public class TitleScreen extends ScreenMode {     
-		float new_game_w;
-		float options_w;
-		float exit_w;
-
 		TitleScreen() {
 			super();
 		}
 
         public void draw () {
             if (this.isAtScreen) {
+				Button new_game = MainGame.var_list.title_menu_options.get(0);
+				Button options = MainGame.var_list.title_menu_options.get(1);
+				Button exit = MainGame.var_list.title_menu_options.get(2);
+				
                 MainGame.var_list.titleText.tick();
-                new_game_w = MainGame.var_list.menuFont.draw(batch, "NEW GAME", adjustW(640), 
-																			  	adjustH(250), 0, Align.center, false).width;
-				options_w = MainGame.var_list.menuFont.draw(batch, "OPTIONS", adjustW(640), 
-																			  adjustH(200), 0, Align.center, false).width;
-				exit_w = MainGame.var_list.menuFont.draw(batch, "EXIT", adjustW(640), 
-																		adjustH(150), 0, Align.center, false).width;
+
+				// NEW GAME
+				new_game.setPosition(adjustW(640), adjustH(250), Align.center);
+				new_game.draw(batch, 1);
+
+				options.setPosition(adjustW(640), adjustH(200), Align.center);
+				options.draw(batch, 1);
+
+				exit.setPosition(adjustW(640), adjustH(150), Align.center);
+				exit.draw(batch, 1);
             }
         }
     }
 
 	public class OptionsScreen extends ScreenMode {
-		boolean soundOff = true;
+		boolean soundOff = false;
 
 		float toggle_sound_w;
 		float go_back_w;
@@ -41,12 +46,16 @@ public class ScreenModes {
 
         public void draw () {
             if (this.isAtScreen) {
+				Button go_back = MainGame.var_list.title_menu_options.get(3);
+				
 				MainGame.var_list.titleFont.draw(batch, "OPTIONS", adjustW(640), 
 																   adjustH(600), 0, Align.center, false);
                 MainGame.var_list.menuFont.draw(batch, "SOUND", adjustW(440), 
 																adjustH(400), 0, Align.center, false);
-				go_back_w = MainGame.var_list.menuFont.draw(batch, "GO BACK", adjustW(640), 
-																 			  adjustH(100), 0, Align.center, false).width;
+				
+				go_back.setPosition(adjustW(640), adjustH(100), Align.center);
+				go_back.draw(batch, 1);
+
 				if (soundOff) 
 					toggle_sound_w = MainGame.var_list.offOption.draw(batch, "OFF", adjustW(840), 
 																			 		adjustH(395), 0, Align.center, false).width;
@@ -62,17 +71,19 @@ public class ScreenModes {
     }
 
 	public class CharSelectScreen extends ScreenMode {
-		float go_back_w;
-
-        CharSelectScreen() {
+		CharSelectScreen() {
 			super();
 			this.isAtScreen = false;
 		}
 
         public void draw () {
             if (this.isAtScreen) {
+				Button go_back = MainGame.var_list.title_menu_options.get(3);
+
                 MainGame.var_list.titleFont.draw(batch, "SELECT CHARACTER", adjustW(640), adjustH(600), 0, Align.center, false);
-				go_back_w = MainGame.var_list.menuFont.draw(batch, "GO BACK", adjustW(640), adjustH(100), 0, Align.center, false).width;
+
+				go_back.setPosition(adjustW(640), adjustH(100), Align.center);
+				go_back.draw(batch, 1);
 
 				MainGame.drawInCharSelect(adjustW(640), adjustH(320), 
 													MainGame.var_list.stickmanV, 

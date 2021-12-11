@@ -1,7 +1,6 @@
 package com.cheese;
 
 import com.badlogic.gdx.Game;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import com.badlogic.gdx.utils.Array;
@@ -11,6 +10,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,26 +40,27 @@ public class MainGame extends Game {
 		public boolean touchDown (int screenX, int screenY, int pointer, int button)
 		{ 
 			var_list.mouse_pos = new Coord(screenX, var_list.screen_size.y - screenY);
+			float menu_dims_w = var_list.actors.get(0).getWidth()/1.5f;
+			float menu_dims_h = var_list.actors.get(0).getHeight()/1.5f;
 
 			if (screens.title.isAtScreen) {
-				// clicking on NEW GAME
-				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (screens.title.new_game_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(250) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f))  {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(250)) < (menu_dims_h/1.5f))  {
 					var_list.b.booAppeared = true;
 					playSound(var_list.boo);
 					return false;
 				}
 				// clicking on OPTIONS
-				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (screens.title.options_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(200) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f))  {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(200)) < (menu_dims_h/1.5f))  {
 					playSound(var_list.click);
 					screens.title.close();
 					screens.options.open();
 					return false;
 				}
 				// clicking on EXIT
-				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (screens.title.options_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(150) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f))  {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(150)) < (menu_dims_h/1.5f))  {
 					playSound(var_list.click);
 					Gdx.app.exit();
 					return false;
@@ -73,8 +75,8 @@ public class MainGame extends Game {
 					return false;
 				}
 				// clicking on GO BACK
-				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (screens.options.go_back_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(100) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f))  {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(100)) < (menu_dims_h/1.5f))  {
 					playSound(var_list.click);
 					screens.options.close();
 					if (!screens.game.isAtScreen) {
@@ -85,8 +87,8 @@ public class MainGame extends Game {
 			}
 			if (screens.char_select.isAtScreen) {
 				// clicking on GO BACK
-				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (screens.char_select.go_back_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(100) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f))  {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(100)) < (menu_dims_h/1.5f))  {
 					playSound(var_list.click);
 					screens.char_select.close();
 					screens.title.open();
@@ -139,11 +141,13 @@ public class MainGame extends Game {
 		public boolean touchUp (int screenX, int screenY, int pointer, int button)
 		{ 
 			var_list.mouse_pos = new Coord(screenX, var_list.screen_size.y - screenY);
+			float menu_dims_w = var_list.actors.get(0).getWidth()/1.5f;
+			float menu_dims_h = var_list.actors.get(0).getHeight()/1.5f;
 
 			if (screens.title.isAtScreen) {
 				// clicking on NEW GAME
-				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (screens.title.new_game_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(250) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f))  {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(250)) < (menu_dims_h/1.5f))  {
 					var_list.b.booAppeared = false;
 					screens.title.close();
 					screens.char_select.open();
@@ -168,6 +172,22 @@ public class MainGame extends Game {
 			var_list.mouse_pos = new Coord(screenX, var_list.screen_size.y - screenY);
 
 			return true;
+		}
+	}
+
+	void setUpMenuButtons (ArrayList<Actor> actors) {
+		Coord dims = new Coord(MainGame.sprites.menu_img.get(0).getWidth(), MainGame.sprites.menu_img.get(0).getHeight()); 
+
+		for (Actor actor : actors) {
+			if (actor.getName().equals("new_game")) {
+				actor.setBounds(640, 250, dims.x, dims.y);
+			}
+			if (actor.getName().equals("options")) {
+				actor.setBounds(640, 200, dims.x, dims.y);
+			}
+			if (actor.getName().equals("new_game")) {
+				actor.setBounds(640, 150, dims.x, dims.y);
+			}
 		}
 	}
 
@@ -246,15 +266,9 @@ public class MainGame extends Game {
 
 	// plays any sound if sound is on
 	void playSound(Sound s) {
-		if (!var_list.soundOff) {
+		if (!screens.options.soundOff) {
 			s.play(); 
 		}
-	}
-
-	// toggles sound
-	public void soundSwitch() {
-		if (!var_list.soundOff) var_list.soundOff = true;
-		else var_list.soundOff = false;
 	}
 
 	
@@ -309,6 +323,8 @@ public class MainGame extends Game {
 		// INPUT PROCESSOR
 		Gdx.input.setInputProcessor(new InputProcessor());
 
+		setUpMenuButtons(var_list.actors);
+
 		var_list.camera.setToOrtho(false);
 		var_list.camera.update();
 	}
@@ -331,6 +347,7 @@ public class MainGame extends Game {
 	@Override
 	public void render () {
 		ScreenUtils.clear(43/225f, 29/255f, 23/255f, 1);
+
 		if (screens.game.isAtScreen && !screens.pausing.isAtScreen) {
 			var_list.playtime++;
 			if (!var_list.game.isStopped) var_list.gameCounter++;
@@ -362,8 +379,8 @@ public class MainGame extends Game {
 		screens.screens.draw();
 
 		// boo appears
-		var_list.b.pos.setPosition(adjustW(640) - screens.title.new_game_w/1.5f, 
-								   adjustH(250 - (var_list.MENU_FONT_H/2)));
+		var_list.b.pos.setPosition(adjustW(640) - var_list.actors.get(0).getWidth()/1.5f, 
+								   adjustH(250));
 		if (var_list.b.booAppeared) var_list.b.draw();
 
 		for (Effect e : var_list.effects) {
@@ -402,5 +419,7 @@ public class MainGame extends Game {
 		var_list.titleFont.dispose();
 		var_list.offOption.dispose();
 		var_list.onOption.dispose();
+
+		var_list.stage.dispose();
 	}
 }

@@ -148,6 +148,11 @@ public class GameInstance {
     
     void tick() {
         screen_size = MainGame.var_list.screen_size;
+        
+        float orig_w = VariableList.screen_w;
+        float orig_h = VariableList.screen_h;
+
+        if (!isStopped) MainGame.var_list.camera.setToOrtho(false, orig_w, orig_h);
 
         bg_back.draw();
         bg_front2.draw();

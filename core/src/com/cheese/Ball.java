@@ -15,11 +15,15 @@ public class Ball {
     Coord accel = new Coord(0, -0.5f);
 
     boolean tick () {
+        float menu_dims_w = MainGame.var_list.actors.get(0).getWidth()/2;
+        float menu_dims_h = MainGame.var_list.actors.get(0).getHeight() - 5;
+
         pos = pos.plus(vel);
         vel = vel.plus(accel);
 
-        if (pos.x > 560 && pos.x < 750 && pos.y < 267) {
-            playSplash(pos.x, 267);
+        if (pos.x > (adjustW(640) - menu_dims_w) && pos.x < (adjustW(640) + menu_dims_w) 
+                                                 && pos.y < (adjustH(250) + menu_dims_h)) {
+            playSplash(pos.x, (adjustH(250) + menu_dims_h));
             return false;
         }
 
@@ -84,4 +88,12 @@ public class Ball {
             trash.add(ball);
         }
     }
+
+    public static float adjustW(float orig_width) {
+		return (orig_width/1280f)*VariableList.screen_w;
+	}
+
+	public static float adjustH(float orig_height) {
+		return (orig_height/720f)*VariableList.screen_h;
+	}
 }

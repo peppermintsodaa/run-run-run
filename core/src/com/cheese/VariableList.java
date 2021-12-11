@@ -7,13 +7,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.viewport.*;
 
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
 import java.util.ArrayList;
 
@@ -22,6 +27,8 @@ public class VariableList {
 	static float screen_w = 1280f;
 	static float screen_h = 720f; 
 	Coord mouse_pos = new Coord(0,0);
+
+	Stage stage;
 
 	OrthographicCamera camera;
 
@@ -46,7 +53,14 @@ public class VariableList {
 
 	Button2 pause;
 	Button pause2;
-	Button test;
+	ArrayList<Button> title_menu_options;
+
+	ArrayList<Actor> actors;
+	Actor new_game;
+	Actor option;
+	Actor exit;
+
+	ArrayList<SpriteDrawable> title_menu_img;
 
 	BitmapFont menuFont;
 	BitmapFont titleFont;
@@ -55,7 +69,6 @@ public class VariableList {
 	BitmapFont score;
 
 	boolean isResized = false;
-	boolean soundOff = true;
 
 	float currTime;
 	int gameCounter;
@@ -70,6 +83,8 @@ public class VariableList {
 
     VariableList() {
         this.screen_size = new Coord(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		this.stage = new Stage(new ScreenViewport());
 
 		this.camera = new OrthographicCamera();
 
@@ -119,7 +134,24 @@ public class VariableList {
 
         // BUTTON
 		this.pause = new Button2(MainGame.sprites.pause_img);
-		this.pause2 = new Button();
-		this.test = new Button();
+
+		this.title_menu_img = new ArrayList<SpriteDrawable>();
+		for (Sprite img : MainGame.sprites.menu_img) 
+			title_menu_img.add(new SpriteDrawable(img));
+			
+		this.title_menu_options = new ArrayList<Button>();
+		for (SpriteDrawable img : title_menu_img)
+			title_menu_options.add(new Button(img));
+			
+		this.actors = new ArrayList<Actor>();
+		for (int i = 0; i < title_menu_img.size(); i++) {
+			actors.add(new Actor());
+			title_menu_options.get(i).add(actors.get(i));
+		}
+
+		actors.get(0).setName("new_game");
+		actors.get(1).setName("options");
+		actors.get(2).setName("exit");
+		actors.get(3).setName("go back");
     }
 }
