@@ -37,7 +37,6 @@ public class ScreenModes {
 		boolean soundOff = false;
 
 		float toggle_sound_w;
-		float go_back_w;
         
 		OptionsScreen() {
 			super();
@@ -94,11 +93,7 @@ public class ScreenModes {
     }
 
 	public class PauseScreen extends ScreenMode {
-		float options_w;
-		float resume_w;
-		float give_up_w;
-
-        PauseScreen () {
+		PauseScreen () {
 			super();
 			this.isAtScreen = false;
 		}
@@ -106,6 +101,10 @@ public class ScreenModes {
 		@Override
         public void draw () {			
             if (this.isAtScreen) {
+				Button options = MainGame.var_list.title_menu_options.get(1);
+				Button resume = MainGame.var_list.title_menu_options.get(4);
+				Button give_up = MainGame.var_list.title_menu_options.get(5);
+
 				Coord pos = new Coord (0,0);
 				// grey background that appears when pausing
 				MainGame.sprites.grey_bg.setSize(MainGame.var_list.screen_size.x, MainGame.var_list.screen_size.y);
@@ -114,9 +113,15 @@ public class ScreenModes {
 
                 if (!MainGame.screens.options.isAtScreen) {
 					MainGame.var_list.titleFont.draw(batch, "PAUSED", adjustW(640), adjustH(400), 0, Align.center, false);
-					options_w = MainGame.var_list.menuFont.draw(batch, "OPTIONS", adjustW(320), adjustH(150), 0, Align.center, false).width;
-					resume_w = MainGame.var_list.menuFont.draw(batch, "RESUME", adjustW(640), adjustH(150), 0, Align.center, false).width;
-					give_up_w = MainGame.var_list.menuFont.draw(batch, "GIVE UP", adjustW(960), adjustH(150), 0, Align.center, false).width;
+
+					options.setPosition(adjustW(320), adjustH(150), Align.center);
+					options.draw(batch, 1);
+
+					resume.setPosition(adjustW(640), adjustH(150), Align.center);
+					resume.draw(batch, 1);
+
+					give_up.setPosition(adjustW(960), adjustH(150), Align.center);
+					give_up.draw(batch, 1);
 				}
 			}
 		}
@@ -135,10 +140,13 @@ public class ScreenModes {
             if (this.isAtScreen) {
 				// MainGame.var_list.run90s.tick();
 				MainGame.var_list.game.tick();
+				if (!MainGame.screens.pausing.isAtScreen && !MainGame.var_list.game.gameOver) 
+					 MainGame.playMusic(MainGame.var_list.game_bgm);
+				else MainGame.var_list.game_bgm.pause();
 			}
 			else {
 				MainGame.var_list.game.reset();
-				// MainGame.var_list.run90s.music.stop();
+				MainGame.var_list.game_bgm.stop();
 			}
 		}
     }

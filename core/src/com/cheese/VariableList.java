@@ -39,10 +39,8 @@ public class VariableList {
 
 	Sound boo;
 	Sound click;
-	Sound run_90s_b;
-	Music run_90s_a;
-
-	BGM run90s;
+	Music game_bgm;
+	Music title_bgm;
 
 	Boo b;
 	ArrayList<Ball> balls = new ArrayList<Ball>();
@@ -99,6 +97,13 @@ public class VariableList {
 		// AUDIO
 		this.boo = Gdx.audio.newSound(Gdx.files.internal("audio/boo.wav"));
 		this.click = Gdx.audio.newSound(Gdx.files.internal("audio/click.mp3"));
+
+		this.game_bgm = Gdx.audio.newMusic(Gdx.files.internal("audio/game_bgm.mp3"));
+        this.game_bgm.setLooping(true);
+
+		this.title_bgm = Gdx.audio.newMusic(Gdx.files.internal("audio/title_bgm.mp3"));
+        this.game_bgm.setLooping(true);
+
 		// this.run_90s_b = Gdx.audio.newSound(Gdx.files.internal("audio/running90s_before.wav"));
 		// this.run_90s_a = Gdx.audio.newMusic(Gdx.files.internal("audio/running90s_after.wav"));
 
@@ -153,5 +158,7 @@ public class VariableList {
 		actors.get(1).setName("options");
 		actors.get(2).setName("exit");
 		actors.get(3).setName("go back");
+		actors.get(4).setName("resume");
+		actors.get(5).setName("give_up");
     }
 }

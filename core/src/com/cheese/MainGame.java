@@ -9,7 +9,7 @@ import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.*;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
@@ -22,11 +22,13 @@ public class MainGame extends Game {
 	{
 		public boolean keyDown (int keycode) {
 			if (screens.game.isAtScreen) {
-				if (!screens.pausing.isAtScreen && !var_list.game.isStopped) {
-					if (keycode == Keys.SPACE) {
-						if (var_list.game.character.hasJumped) 
-							var_list.game.character.hasDoubleJumped = true;
-						var_list.game.character.hasJumped = true;
+				if (!screens.pausing.isAtScreen) {
+					if (!var_list.game.gameOver) {
+						if (keycode == Keys.SPACE) {
+							if (var_list.game.character.hasJumped) 
+								var_list.game.character.hasDoubleJumped = true;
+							var_list.game.character.hasJumped = true;
+						}
 					}
 					if (keycode == Keys.ESCAPE) {
 						screens.pausing.open();
@@ -115,20 +117,20 @@ public class MainGame extends Game {
 			}
 			if (screens.pausing.isAtScreen && !screens.options.isAtScreen) {
 				// clicking on OPTIONS
-				if (Math.abs(var_list.mouse_pos.x - adjustW(320)) < (screens.pausing.options_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(150) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f)) {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(320)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(150)) < (menu_dims_h/1.5f)) {
 					screens.options.open();
 					playSound(var_list.click);
 				}
 				// clicking on RESUME
-				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (screens.pausing.options_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(150) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f)) {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(640)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(150)) < (menu_dims_h/1.5f)) {
 					screens.pausing.close();
 					playSound(var_list.click);
 				}
 				// clicking on GIVE UP
-				if (Math.abs(var_list.mouse_pos.x - adjustW(960)) < (screens.pausing.options_w/1.5f) &&
-					Math.abs(var_list.mouse_pos.y - (adjustH(150) - var_list.MENU_FONT_H/2)) < (var_list.MENU_FONT_H/1.5f)) {
+				if (Math.abs(var_list.mouse_pos.x - adjustW(960)) < (menu_dims_w/1.5f) &&
+					Math.abs(var_list.mouse_pos.y - adjustH(150)) < (menu_dims_h/1.5f)) {
 					screens.pausing.close();
 					screens.game.close();
 					playSound(var_list.click);
@@ -265,10 +267,17 @@ public class MainGame extends Game {
 	}
 
 	// plays any sound if sound is on
-	void playSound(Sound s) {
+	static void playSound(Sound s) {
 		if (!screens.options.soundOff) {
 			s.play(); 
 		}
+	}
+
+	static void playMusic(Music m) {
+		if (!screens.options.soundOff) {
+			m.play(); 
+		}
+		else m.pause();
 	}
 
 	
@@ -366,6 +375,9 @@ public class MainGame extends Game {
 		if ((screens.title.isAtScreen || screens.options.isAtScreen 
 									  || screens.char_select.isAtScreen) && !screens.game.isAtScreen) {	
 			var_list.titleCounter++;
+
+			playMusic(var_list.title_bgm);
+
 			createBall();	// creates array of balls
 
 			// draws balls
@@ -373,7 +385,10 @@ public class MainGame extends Game {
 				ball.draw(ball, trash_bin);
 			}
 		}
-		else var_list.balls.removeAll(var_list.balls);	// respawns balls when moved to title screen
+		else {
+			var_list.balls.removeAll(var_list.balls);	// respawns balls when moved to title screen
+			var_list.title_bgm.stop();
+		}
 		
 		// menu screen drawing
 		screens.screens.draw();
@@ -400,6 +415,7 @@ public class MainGame extends Game {
 		sprites.boo_img.getTexture().dispose();
 		sprites.ball_img.getTexture().dispose();
 		sprites.eye_img.getTexture().dispose();
+		sprites.mouth_img.getTexture().dispose();
 		sprites.grey_bg.getTexture().dispose();
 		sprites.pause_img.getTexture().dispose();
 		sprites.sky_bg_img.getTexture().dispose();
@@ -407,19 +423,18 @@ public class MainGame extends Game {
 		sprites.grass2_bg_img.getTexture().dispose();
 		for (Sprite f: sprites.titleFrames) f.getTexture().dispose();
 		for (Sprite f: sprites.hamFrames) f.getTexture().dispose();
+		for (Sprite s: sprites.menu_img) s.getTexture().dispose();
 		for (Sprite s: var_list.stickmanV.standing_sprites) s.getTexture().dispose();
 		for (Sprite s: var_list.stickmanV.running_sprites) s.getTexture().dispose();
 
 		var_list.boo.dispose();
 		var_list.click.dispose();
-		// var_list.run_90s_a.dispose();
-		// var_list.run_90s_b.dispose();
+		var_list.game_bgm.dispose();
+		var_list.title_bgm.dispose();
 		
 		var_list.menuFont.dispose();
 		var_list.titleFont.dispose();
 		var_list.offOption.dispose();
 		var_list.onOption.dispose();
-
-		var_list.stage.dispose();
 	}
 }

@@ -21,10 +21,12 @@ public class Ball {
         pos = pos.plus(vel);
         vel = vel.plus(accel);
 
-        if (pos.x > (adjustW(640) - menu_dims_w) && pos.x < (adjustW(640) + menu_dims_w) 
-                                                 && pos.y < (adjustH(250) + menu_dims_h)) {
-            playSplash(pos.x, (adjustH(250) + menu_dims_h));
-            return false;
+        if (MainGame.screens.title.isAtScreen) {
+            if (pos.x > (adjustW(640) - menu_dims_w) && pos.x < (adjustW(640) + menu_dims_w) 
+                                                     && pos.y < (adjustH(250) + menu_dims_h)) {
+                playSplash(pos.x, (adjustH(250) + menu_dims_h));
+                return false;
+            }
         }
 
         if (pos.y < 0) {

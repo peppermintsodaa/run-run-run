@@ -1,5 +1,5 @@
 menu.png
-  size:179, 120
+  size:179, 180
   format: RGBA8888
   filter: Linear, Linear
   repeat: none
@@ -13,6 +13,12 @@ s
 s
   bounds: 0, 60, 179, 30
   index: 2
-  s
+s
   bounds: 0, 90, 179, 30
   index: 3
+s
+  bounds: 0, 120, 179, 30
+  index: 4
+s
+  bounds: 0, 150, 179, 30
+  index: 5

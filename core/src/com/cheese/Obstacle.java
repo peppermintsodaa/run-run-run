@@ -48,7 +48,7 @@ public class Obstacle {
         if (pos.x < -img.getWidth()/2) {
             return false;
         }
-        System.out.println(wait_counter);
+        // System.out.println(wait_counter);
         return true;
     }
 
